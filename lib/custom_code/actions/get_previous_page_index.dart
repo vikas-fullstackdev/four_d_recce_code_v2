@@ -1,0 +1,59 @@
+// Automatic FlutterFlow imports
+import '/backend/schema/structs/index.dart';
+import '/backend/supabase/supabase.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import 'index.dart'; // Imports other custom actions
+import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:flutter/material.dart';
+// Begin custom action code
+// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
+
+// Set your action name, define your arguments and return parameter,
+// and then add the boilerplate code using the green button on the right!
+// Global variable to track the current position
+// int _iteratorPos = 0;
+
+// Fixed list of all pages
+int getPreviousPageIndex(int currentIndex, List<String> visibleItems) {
+  final allPages = [
+    "int_a",
+    "int_b",
+    "int_c",
+    "int_d",
+    "int_e",
+    "int_f",
+    "int_g",
+    "mep_a",
+    "mep_b",
+    "mep_c",
+    "mep_d",
+    "mep_e",
+    "mep_f",
+    "mep_g",
+  ];
+
+  List<int> trueIndexes = [];
+  for (int i = 0; i < allPages.length; i++) {
+    if (visibleItems.contains(allPages[i])) {
+      trueIndexes.add(i);
+    }
+  }
+
+  if (trueIndexes.isEmpty) return currentIndex;
+
+  int pos = trueIndexes.indexOf(currentIndex);
+
+  if (pos == -1) {
+    // If currentIndex not visible → default to first
+    return trueIndexes.first;
+  }
+
+  // If not first → return previous
+  if (pos > 0) {
+    return trueIndexes[pos - 1];
+  }
+
+  // Already at first → stay
+  return trueIndexes.first;
+}

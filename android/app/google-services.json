@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "466725892915",
+    "project_id": "fourdrecce",
+    "storage_bucket": "fourdrecce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466725892915:android:05774d781e3945da744446",
+        "android_client_info": {
+          "package_name": "com.mycompany.fourdrecce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqHZ1E-1KNDMHpFR7TTB9nehoc9PHhm30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

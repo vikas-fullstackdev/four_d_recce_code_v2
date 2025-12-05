@@ -14,6 +14,10 @@ import 'package:provider/provider.dart';
 import 'qc_model.dart';
 export 'qc_model.dart';
 
+// Add imports for the target pages
+import '../pages/qc_visit_form/qc_visit_form_widget.dart';
+import '../pages/qc_details_history/qc_details_history_widget.dart';
+
 class QcWidget extends StatefulWidget {
   const QcWidget({super.key});
 
@@ -62,6 +66,7 @@ class _QcWidgetState extends State<QcWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        bottomNavigationBar: null,
         appBar: AppBar(
           backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
           automaticallyImplyLeading: false,
@@ -69,30 +74,30 @@ class _QcWidgetState extends State<QcWidget> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Image.asset(
-                'assets/images/New4Dlogo.png',
+                'assets/images/logo.png',
                 width: 42.0,
                 height: 42.0,
                 fit: BoxFit.contain,
               ),
               Text(
                 'QC Check list',
-                style: FlutterFlowTheme.of(context).titleMedium.override(
+                style: FlutterFlowTheme.of(context).titleMedium!.override(
                       font: GoogleFonts.interTight(
                         fontWeight: FontWeight.w600,
                         fontStyle:
-                            FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                            FlutterFlowTheme.of(context).titleMedium!.fontStyle,
                       ),
                       letterSpacing: 0.0,
                       fontWeight: FontWeight.w600,
                       fontStyle:
-                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                          FlutterFlowTheme.of(context).titleMedium!.fontStyle,
                     ),
               ),
-            ].divide(SizedBox(width: 12.0)),
+            ].divide(const SizedBox(width: 12.0)),
           ),
           actions: [
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -103,32 +108,32 @@ class _QcWidgetState extends State<QcWidget> {
                         FlutterFlowIconButton(
                           borderRadius: 8.0,
                           buttonSize: 40.0,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.online_prediction,
                             color: Color(0xFF00FF00),
                             size: 24.0,
                           ),
                           onPressed: () {
-                            print('IconButton pressed ...');
+                            // no-op
                           },
                         ),
                       if (_model.isDeviceOnlineTImer == false)
                         FlutterFlowIconButton(
                           borderRadius: 8.0,
                           buttonSize: 40.0,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.cloud_off,
                             color: Color(0xFFFF0000),
                             size: 24.0,
                           ),
                           onPressed: () {
-                            print('IconButton pressed ...');
+                            // no-op
                           },
                         ),
                       Align(
-                        alignment: AlignmentDirectional(0.0, 0.0),
+                        alignment: const AlignmentDirectional(0.0, 0.0),
                         child: FlutterFlowTimer(
-                          key: ValueKey('homeTimer'),
+                          key: const ValueKey('homeTimer'),
                           initialTime: _model.timerInitialTimeMs,
                           getDisplayTime: (value) =>
                               StopWatchTimer.getDisplayTime(
@@ -137,7 +142,7 @@ class _QcWidgetState extends State<QcWidget> {
                             milliSecond: false,
                           ),
                           controller: _model.timerController,
-                          updateStateInterval: Duration(milliseconds: 1000),
+                          updateStateInterval: const Duration(milliseconds: 1000),
                           onChanged: (value, displayTime, shouldUpdate) {
                             _model.timerMilliseconds = value;
                             _model.timerValue = displayTime;
@@ -157,23 +162,24 @@ class _QcWidgetState extends State<QcWidget> {
                           },
                           textAlign: TextAlign.start,
                           style: FlutterFlowTheme.of(context)
-                              .headlineSmall
+                              .headlineSmall!
                               .override(
                                 font: GoogleFonts.interTight(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .headlineSmall
+                                      .headlineSmall!
                                       .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .headlineSmall
-                                      .fontStyle,
+                                  fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .headlineSmall!
+                                          .fontStyle,
                                 ),
                                 fontSize: 0.0,
                                 letterSpacing: 0.0,
                                 fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineSmall
+                                    .headlineSmall!
                                     .fontWeight,
                                 fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineSmall
+                                    .headlineSmall!
                                     .fontStyle,
                               ),
                         ),
@@ -203,7 +209,7 @@ class _QcWidgetState extends State<QcWidget> {
                     borderRadius: 20.0,
                     buttonSize: 40.0,
                     fillColor: FlutterFlowTheme.of(context).primary,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.person,
                       color: Colors.white,
                       size: 20.0,
@@ -212,7 +218,7 @@ class _QcWidgetState extends State<QcWidget> {
                       context.pushNamed(ProfileWidget.routeName);
                     },
                   ),
-                ].divide(SizedBox(width: 8.0)),
+                ].divide(const SizedBox(width: 8.0)),
               ),
             ),
           ],
@@ -221,9 +227,105 @@ class _QcWidgetState extends State<QcWidget> {
         ),
         body: SafeArea(
           top: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [],
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Intro / Title
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'QC Actions',
+                    style: FlutterFlowTheme.of(context).headlineSmall,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Two-section cards
+                Expanded(
+                  child: ListView(
+                    children: [
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          leading: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).primary.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.play_circle_fill, color: Colors.blue, size: 28),
+                          ),
+                          title: Text('Launch QC', style: FlutterFlowTheme.of(context).titleMedium),
+                          subtitle: const Text('Start a new QC visit and submit responses.'),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              // Navigate to QC Visit Form.
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => QcVisitFormWidget(
+                                    projectId: '', // provide project id if available
+                                    recestageId: '', // provide recestage id if available
+                                  ),
+                                ),
+                              );
+                            },
+                            child: const Text('Open'),
+                            style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          leading: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).secondary.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.history, color: Colors.teal, size: 28),
+                          ),
+                          title: Text('View QC', style: FlutterFlowTheme.of(context).titleMedium),
+                          subtitle: const Text('See QC history and details.'),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              // Navigate to QC Details / History.
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => QcDetailsHistoryWidget(
+                                    projectId: '',
+                                    projectName: '',
+                                    proectImage: '',
+                                    recestageId: '',
+                                    creatDate: DateTime.now(),
+                                    responseId: '',
+                                    historyId: '',
+                                  ),
+                                ),
+                              );
+                            },
+                            child: const Text('Open'),
+                            style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

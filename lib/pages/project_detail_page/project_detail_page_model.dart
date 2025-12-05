@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 import '/components/project_assigned_users_component_widget.dart';
@@ -24,39 +26,75 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ProjectDetailPageModel extends FlutterFlowModel<ProjectDetailPageWidget> {
-  ///  Local state fields for this page.
-
+  /// Raw Supabase row for the project
   dynamic rowJson;
 
-  ProjectsRow? projectDetails;
+  /// Parsed project_details JSON stored as Map after fetch
+  Map<String, dynamic> projectDetailsMap = <String, dynamic>{};
 
-  bool projectDetailColumn = false;
+  /// UI/UIX state
+  bool useCompactLayout = false;
 
-  ///  State fields for stateful widgets in this page.
-
-  // State field(s) for DropDown widget.
+  /// Example DropDown state (kept for compatibility)
   List<String>? dropDownValue;
   FormFieldController<List<String>>? dropDownValueController;
-  // Stores action output result for [Custom Action - storePdfDatabase] action in Button widget.
+
+  /// Temporary storage for actions
   String? storePdfDatabaseDownload1;
-  // Stores action output result for [Custom Action - storePdfDatabase] action in Button widget.
   String? storePdfDatabaseDownload;
-  // State field(s) for Timer widget.
-  final timerInitialTimeMs = 3000;
-  int timerMilliseconds = 3000;
+
+  /// Timer controller used to periodically refresh online status
+  final int timerInitialTimeMs = 30000;
+  int timerMilliseconds = 30000;
   String timerValue = StopWatchTimer.getDisplayTime(
-    3000,
+    30000,
     hours: false,
     milliSecond: false,
   );
   FlutterFlowTimerController timerController =
       FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countDown));
 
-  // Stores action output result for [Custom Action - isDeviceOnline] action in Timer widget.
+  /// Result from custom action isDeviceOnline
   bool? isDeviceOnlineTImer;
 
+  /// Parse flexible project_details field (Map, JSON string, List, etc.)
+  void updateProjectDetails(dynamic raw) {
+    projectDetailsMap = <String, dynamic>{};
+    if (raw == null) return;
+
+    // If already a Map
+    if (raw is Map<String, dynamic>) {
+      projectDetailsMap = Map<String, dynamic>.from(raw);
+      return;
+    }
+
+    // If list (wrap under _list key)
+    if (raw is List) {
+      projectDetailsMap = <String, dynamic>{'_list': raw};
+      return;
+    }
+
+    // Try decode JSON string or stringified object
+    try {
+      final s = raw is String ? raw : raw.toString();
+      final decoded = jsonDecode(s);
+      if (decoded is Map<String, dynamic>) {
+        projectDetailsMap = Map<String, dynamic>.from(decoded);
+      } else if (decoded is List) {
+        projectDetailsMap = <String, dynamic>{'_list': decoded};
+      } else {
+        projectDetailsMap = <String, dynamic>{'value': decoded};
+      }
+    } catch (_) {
+      // Fallback: store as single value string
+      projectDetailsMap = <String, dynamic>{'value': raw.toString()};
+    }
+  }
+
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    // nothing extra here
+  }
 
   @override
   void dispose() {

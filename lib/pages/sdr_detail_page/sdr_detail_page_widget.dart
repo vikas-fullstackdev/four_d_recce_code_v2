@@ -12,6 +12,14 @@ import '/pages/dropdownaccount/dropdownaccount_widget.dart';
 import 'dart:math';
 import 'dart:ui';
 import '/custom_code/actions/index.dart' as actions;
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:http/http.dart' as http;
+import '/utils/download_helper.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '/index.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:aligned_dialog/aligned_dialog.dart';
@@ -50,6 +58,15 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
   late SdrDetailPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Helper to build safe download filename: projectname_report.pdf
+  String _makeProjectReportFilename(String? projectName, [String? fallbackId]) {
+    final base = (projectName?.trim().isNotEmpty == true
+            ? projectName!.trim()
+            : (fallbackId ?? 'project'))
+        .replaceAll(RegExp(r'[^A-Za-z0-9]+'), '_');
+    return '${base}_report.pdf';
+  }
 
   final animationsMap = <String, AnimationInfo>{};
 
@@ -187,6 +204,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
           child: Scaffold(
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            bottomNavigationBar: null,
             appBar: AppBar(
               backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
               automaticallyImplyLeading: false,
@@ -194,7 +212,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Image.asset(
-                    'assets/images/New4Dlogo.png',
+                    'assets/images/logo.png',
                     width: 42.0,
                     height: 42.0,
                     fit: BoxFit.contain,
@@ -352,148 +370,148 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          if (responsiveVisibility(
-                            context: context,
-                            phone: false,
-                            tablet: false,
-                            tabletLandscape: false,
-                            desktop: false,
-                          ))
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'SDR',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 20.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(),
-                                  child: Align(
-                                    alignment: AlignmentDirectional(0.0, 0.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        if (responsiveVisibility(
-                                          context: context,
-                                          phone: false,
-                                          tablet: false,
-                                          tabletLandscape: false,
-                                          desktop: false,
-                                        ))
-                                          Builder(
-                                            builder: (context) => Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      0.0, 0.0, 0.0, 20.0),
-                                              child: FlutterFlowIconButton(
-                                                borderColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondary,
-                                                borderRadius: 30.0,
-                                                borderWidth: 1.0,
-                                                buttonSize: 40.0,
-                                                icon: Icon(
-                                                  Icons.person,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                  size: 24.0,
-                                                ),
-                                                onPressed: () async {
-                                                  await showAlignedDialog(
-                                                    context: context,
-                                                    isGlobal: false,
-                                                    avoidOverflow: false,
-                                                    targetAnchor:
-                                                        AlignmentDirectional(
-                                                                1.0, 1.0)
-                                                            .resolve(
-                                                                Directionality.of(
-                                                                    context)),
-                                                    followerAnchor:
-                                                        AlignmentDirectional(
-                                                                1.0, -1.0)
-                                                            .resolve(
-                                                                Directionality.of(
-                                                                    context)),
-                                                    builder: (dialogContext) {
-                                                      return Material(
-                                                        color:
-                                                            Colors.transparent,
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            FocusScope.of(
-                                                                    dialogContext)
-                                                                .unfocus();
-                                                            FocusManager
-                                                                .instance
-                                                                .primaryFocus
-                                                                ?.unfocus();
-                                                          },
-                                                          child:
-                                                              DropdownaccountWidget(),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          child: Image.asset(
-                                            'assets/images/4dRecceAppLogo.png',
-                                            width: 45.0,
-                                            height: 45.0,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          Container(
-                            width: double.infinity,
-                            height: 1.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context).secondary,
-                            ),
-                          ),
-                        ].divide(SizedBox(height: 5.0)),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding:
+                    //       EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                    //   child: Column(
+                    //     mainAxisSize: MainAxisSize.max,
+                    //     children: [
+                    //       if (responsiveVisibility(
+                    //         context: context,
+                    //         phone: false,
+                    //         tablet: false,
+                    //         tabletLandscape: false,
+                    //         desktop: false,
+                    //       ))
+                    //         Row(
+                    //           mainAxisSize: MainAxisSize.max,
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Text(
+                    //               'SDR',
+                    //               style: FlutterFlowTheme.of(context)
+                    //                   .bodyMedium
+                    //                   .override(
+                    //                     font: GoogleFonts.inter(
+                    //                       fontWeight: FontWeight.w500,
+                    //                       fontStyle:
+                    //                           FlutterFlowTheme.of(context)
+                    //                               .bodyMedium
+                    //                               .fontStyle,
+                    //                     ),
+                    //                     fontSize: 20.0,
+                    //                     letterSpacing: 0.0,
+                    //                     fontWeight: FontWeight.w500,
+                    //                     fontStyle: FlutterFlowTheme.of(context)
+                    //                         .bodyMedium
+                    //                         .fontStyle,
+                    //                   ),
+                    //             ),
+                    //             Container(
+                    //               decoration: BoxDecoration(),
+                    //               child: Align(
+                    //                 alignment: AlignmentDirectional(0.0, 0.0),
+                    //                 child: Row(
+                    //                   mainAxisSize: MainAxisSize.max,
+                    //                   mainAxisAlignment:
+                    //                       MainAxisAlignment.center,
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.end,
+                    //                   children: [
+                    //                     if (responsiveVisibility(
+                    //                       context: context,
+                    //                       phone: false,
+                    //                       tablet: false,
+                    //                       tabletLandscape: false,
+                    //                       desktop: false,
+                    //                     ))
+                    //                       Builder(
+                    //                         builder: (context) => Padding(
+                    //                           padding: EdgeInsetsDirectional
+                    //                               .fromSTEB(
+                    //                                   0.0, 0.0, 0.0, 20.0),
+                    //                           child: FlutterFlowIconButton(
+                    //                             borderColor:
+                    //                                 FlutterFlowTheme.of(context)
+                    //                                     .secondary,
+                    //                             borderRadius: 30.0,
+                    //                             borderWidth: 1.0,
+                    //                             buttonSize: 40.0,
+                    //                             icon: Icon(
+                    //                               Icons.person,
+                    //                               color: FlutterFlowTheme.of(
+                    //                                       context)
+                    //                                   .primaryText,
+                    //                               size: 24.0,
+                    //                             ),
+                    //                             onPressed: () async {
+                    //                               await showAlignedDialog(
+                    //                                 context: context,
+                    //                                 isGlobal: false,
+                    //                                 avoidOverflow: false,
+                    //                                 targetAnchor:
+                    //                                     AlignmentDirectional(
+                    //                                             1.0, 1.0)
+                    //                                         .resolve(
+                    //                                             Directionality.of(
+                    //                                                 context)),
+                    //                                 followerAnchor:
+                    //                                     AlignmentDirectional(
+                    //                                             1.0, -1.0)
+                    //                                         .resolve(
+                    //                                             Directionality.of(
+                    //                                                 context)),
+                    //                                 builder: (dialogContext) {
+                    //                                   return Material(
+                    //                                     color:
+                    //                                         Colors.transparent,
+                    //                                     child: GestureDetector(
+                    //                                       onTap: () {
+                    //                                         FocusScope.of(
+                    //                                                 dialogContext)
+                    //                                             .unfocus();
+                    //                                         FocusManager
+                    //                                             .instance
+                    //                                             .primaryFocus
+                    //                                             ?.unfocus();
+                    //                                       },
+                    //                                       child:
+                    //                                           DropdownaccountWidget(),
+                    //                                     ),
+                    //                                   );
+                    //                                 },
+                    //                               );
+                    //                             },
+                    //                           ),
+                    //                         ),
+                    //                       ),
+                    //                     ClipRRect(
+                    //                       borderRadius:
+                    //                           BorderRadius.circular(8.0),
+                    //                       child: Image.asset(
+                    //                         'assets/images/4dRecceAppLogo.png',
+                    //                         width: 45.0,
+                    //                         height: 45.0,
+                    //                         fit: BoxFit.cover,
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       Container(
+                    //         width: double.infinity,
+                    //         height: 1.0,
+                    //         decoration: BoxDecoration(
+                    //           color: FlutterFlowTheme.of(context).secondary,
+                    //         ),
+                    //       ),
+                    //     ].divide(SizedBox(height: 5.0)),
+                    //   ),
+                    // ),
                     FutureBuilder<List<RecceresponsesRow>>(
                       future: RecceresponsesTable().querySingleRow(
                         queryFn: (q) => q
@@ -502,7 +520,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                               widget!.recestageId,
                             )
                             .eqOrNull(
-                              'stageNo',
+                              'stageno',
                               2,
                             ),
                       ),
@@ -534,110 +552,110 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    16.0, 12.0, 16.0, 12.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          FlutterFlowIconButton(
-                                            borderRadius: 8.0,
-                                            buttonSize: 40.0,
-                                            icon: Icon(
-                                              Icons.arrow_back,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primary,
-                                              size: 24.0,
-                                            ),
-                                            onPressed: () {
-                                              print('IconButton pressed ...');
-                                            },
-                                          ),
-                                          Text(
-                                            valueOrDefault<String>(
-                                              widget!.projectName,
-                                              'Project Name',
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .displaySmall
-                                                .override(
-                                                  font: GoogleFonts.interTight(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displaySmall
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displaySmall
-                                                            .fontStyle,
-                                                  ),
-                                                  fontSize: 30.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .displaySmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .displaySmall
-                                                          .fontStyle,
-                                                ),
-                                          ).animateOnPageLoad(animationsMap[
-                                              'textOnPageLoadAnimation1']!),
-                                        ],
-                                      ),
-                                      Divider(
-                                        height: 24.0,
-                                        thickness: 1.0,
-                                        color: Color(0xFFE0E3E7),
-                                      ).animateOnPageLoad(animationsMap[
-                                          'dividerOnPageLoadAnimation']!),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            12.0, 24.0, 0.0, 0.0),
-                                        child: Text(
-                                          'Recce Details',
-                                          style: FlutterFlowTheme.of(context)
-                                              .labelLarge
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelLarge
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w600,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelLarge
-                                                        .fontStyle,
-                                              ),
-                                        ).animateOnPageLoad(animationsMap[
-                                            'textOnPageLoadAnimation2']!),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: EdgeInsetsDirectional.fromSTEB(
+                              //       16.0, 12.0, 16.0, 12.0),
+                              //   child: SingleChildScrollView(
+                              //     child: Column(
+                              //       mainAxisSize: MainAxisSize.max,
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         // Row(
+                              //         //   mainAxisSize: MainAxisSize.max,
+                              //         //   mainAxisAlignment:
+                              //         //       MainAxisAlignment.spaceBetween,
+                              //         //   crossAxisAlignment:
+                              //         //       CrossAxisAlignment.center,
+                              //         //   children: [
+                              //         //     // FlutterFlowIconButton(
+                              //         //     //   borderRadius: 8.0,
+                              //         //     //   buttonSize: 40.0,
+                              //         //     //   icon: Icon(
+                              //         //     //     Icons.arrow_back,
+                              //         //     //     color:
+                              //         //     //         FlutterFlowTheme.of(context)
+                              //         //     //             .primary,
+                              //         //     //     size: 24.0,
+                              //         //     //   ),
+                              //         //     //   onPressed: () {
+                              //         //     //     print('IconButton pressed ...');
+                              //         //     //   },
+                              //         //     // ),
+                              //         //     Text(
+                              //         //       valueOrDefault<String>(
+                              //         //         widget!.projectName,
+                              //         //         'Project Name',
+                              //         //       ),
+                              //         //       style: FlutterFlowTheme.of(context)
+                              //         //           .displaySmall
+                              //         //           .override(
+                              //         //             font: GoogleFonts.interTight(
+                              //         //               fontWeight:
+                              //         //                   FlutterFlowTheme.of(
+                              //         //                           context)
+                              //         //                       .displaySmall
+                              //         //                       .fontWeight,
+                              //         //               fontStyle:
+                              //         //                   FlutterFlowTheme.of(
+                              //         //                           context)
+                              //         //                       .displaySmall
+                              //         //                       .fontStyle,
+                              //         //             ),
+                              //         //             fontSize: 30.0,
+                              //         //             letterSpacing: 0.0,
+                              //         //             fontWeight:
+                              //         //                 FlutterFlowTheme.of(
+                              //         //                         context)
+                              //         //                     .displaySmall
+                              //         //                     .fontWeight,
+                              //         //             fontStyle:
+                              //         //                 FlutterFlowTheme.of(
+                              //         //                         context)
+                              //         //                     .displaySmall
+                              //         //                     .fontStyle,
+                              //         //           ),
+                              //         //     ).animateOnPageLoad(animationsMap[
+                              //         //         'textOnPageLoadAnimation1']!),
+                              //         //   ],
+                              //         // ),
+                              //         Divider(
+                              //           height: 24.0,
+                              //           thickness: 1.0,
+                              //           color: Color(0xFFE0E3E7),
+                              //         ).animateOnPageLoad(animationsMap[
+                              //             'dividerOnPageLoadAnimation']!),
+                              //         Padding(
+                              //           padding: EdgeInsetsDirectional.fromSTEB(
+                              //               12.0, 24.0, 0.0, 0.0),
+                              //           child: Text(
+                              //             'Recce Details',
+                              //             style: FlutterFlowTheme.of(context)
+                              //                 .labelLarge
+                              //                 .override(
+                              //                   font: GoogleFonts.inter(
+                              //                     fontWeight: FontWeight.w600,
+                              //                     fontStyle:
+                              //                         FlutterFlowTheme.of(
+                              //                                 context)
+                              //                             .labelLarge
+                              //                             .fontStyle,
+                              //                   ),
+                              //                   fontSize: 18.0,
+                              //                   letterSpacing: 0.0,
+                              //                   fontWeight: FontWeight.w600,
+                              //                   fontStyle:
+                              //                       FlutterFlowTheme.of(context)
+                              //                           .labelLarge
+                              //                           .fontStyle,
+                              //                 ),
+                              //           ).animateOnPageLoad(animationsMap[
+                              //               'textOnPageLoadAnimation2']!),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                               if (responsiveVisibility(
                                 context: context,
                                 phone: false,
@@ -720,15 +738,15 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                     ),
                                   ),
                                 ),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.asset(
-                                  'assets/images/sdr.png',
-                                  width: 100.0,
-                                  height: 100.0,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                              // ClipRRect(
+                              //   borderRadius: BorderRadius.circular(8.0),
+                              //   child: Image.asset(
+                              //     'assets/images/sdr.png',
+                              //     width: 100.0,
+                              //     height: 100.0,
+                              //     fit: BoxFit.cover,
+                              //   ),
+                              // ),
                               if ((sdrDetailPageReccetemplatesRow?.projectid !=
                                       widget!.projectId) &&
                                   responsiveVisibility(
@@ -917,7 +935,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                                     .dropDownValueController ??=
                                                 FormFieldController<String>(
                                               _model.dropDownValue ??=
-                                                  widget!.projectName,
+                                                  widget.projectId,
                                             ),
                                             options: List<String>.from(
                                                 dropDownProjectsRowList
@@ -1169,38 +1187,64 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
 
                                         return FFButtonWidget(
                                           onPressed: () async {
-                                            _model.storePdfDatabaseDownload =
-                                                await actions.storePdfDatabase(
-                                              widget!.projectId!,
-                                            );
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Report created successfully',
-                                                  style: TextStyle(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryText,
-                                                  ),
-                                                ),
-                                                duration: Duration(
-                                                    milliseconds: 4000),
-                                                backgroundColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondary,
-                                              ),
-                                            );
-                                            await downloadFile(
-                                              filename:
-                                                  '${widget!.projectName}${getCurrentTimestamp.toString()}',
-                                              url: valueOrDefault<String>(
-                                                _model.storePdfDatabaseDownload,
-                                                'https://drive.google.com/file/d/1-8XeA7aQp7UiZcJYKshtq0ZTTpGIcKdj/view?usp=sharing',
-                                              ),
-                                            );
+                                            try {
+                                              final fileUrl = await actions.storePdfDatabase(
+                                                widget!.projectId!,
+                                              );
+                                              if (fileUrl == null ||
+                                                  fileUrl.isEmpty ||
+                                                  (fileUrl is String && fileUrl.startsWith('Error:'))) {
+                                                throw Exception('PDF generation failed: $fileUrl');
+                                              }
 
-                                            safeSetState(() {});
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Report created successfully',
+                                                    style: TextStyle(
+                                                      color: FlutterFlowTheme.of(context).primaryText,
+                                                    ),
+                                                  ),
+                                                  duration: Duration(milliseconds: 4000),
+                                                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                                ),
+                                              );
+
+                                              final filename = _makeProjectReportFilename(widget!.projectName, widget!.projectId);
+                                              final urlStr = fileUrl.toString();
+
+                                              Future<Uint8List> _getBytesFromUrl(String u) async {
+                                                if (u.startsWith('data:')) {
+                                                  final base64Part = u.split(',').last;
+                                                  return base64Decode(base64Part);
+                                                }
+                                                final resp = await http.get(Uri.parse(u));
+                                                if (resp.statusCode != 200) {
+                                                  throw Exception('Failed to fetch file, status ${resp.statusCode}');
+                                                }
+                                                return resp.bodyBytes;
+                                              }
+
+                                              final bytes = await _getBytesFromUrl(urlStr);
+
+                                              if (kIsWeb) {
+                                                await webDownload(bytes, filename);
+                                              } else {
+                                                final tmpDir = await getTemporaryDirectory();
+                                                final safeName = filename.replaceAll(RegExp(r'[\\/:"*?<>|]+'), '_');
+                                                final file = File('${tmpDir.path}/$safeName');
+                                                await file.writeAsBytes(bytes, flush: true);
+                                                await OpenFilex.open(file.path);
+                                              }
+
+                                              safeSetState(() {});
+                                            } catch (e) {
+                                              print('store+fetch+download failed: $e');
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text('Failed to create/download report: ${e.toString()}')),
+                                              );
+                                            }
                                           },
                                           text: 'Download Report',
                                           icon: Icon(
@@ -1320,6 +1364,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                         },
                                         matchingRows: (rows) => rows.eqOrNull(
                                           'recceresponseid',
+                                          // Use the variable defined above (columnRecceresponsesRow)
                                           columnRecceresponsesRow
                                               ?.recceresponseid,
                                         ),
@@ -1592,38 +1637,71 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                           28.0, 12.0, 28.0, 12.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          _model.storePdfDatabaseDownload1 =
-                                              await actions.storePdfDatabase(
-                                            _model.dropDownValue!,
-                                          );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Report created successfully',
-                                                style: TextStyle(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                ),
-                                              ),
-                                              duration:
-                                                  Duration(milliseconds: 4000),
-                                              backgroundColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondary,
-                                            ),
-                                          );
-                                          await downloadFile(
-                                            filename:
-                                                '${widget!.projectName}SDR Report',
-                                            url: valueOrDefault<String>(
-                                              _model.storePdfDatabaseDownload1,
-                                              'storePDFDatabaseDownload1',
-                                            ),
-                                          );
+                                          // Determine selected project id (dropdown selection has priority).
+                                          final projId = (_model.dropDownValue?.isNotEmpty == true)
+                                              ? _model.dropDownValue!
+                                              : (widget?.projectId ?? '');
+                                          if (projId.isEmpty) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Please select a project')),
+                                            );
+                                            return;
+                                          }
 
-                                          safeSetState(() {});
+                                          try {
+                                            // Call custom action that generates PDF and uploads to Supabase storage.
+                                            final fileUrl = await actions.storePdfDatabase(projId);
+
+                                            // action returns an error string on failure: handle that
+                                            if (fileUrl == null || fileUrl.isEmpty || (fileUrl is String && fileUrl.startsWith('Error:'))) {
+                                              throw Exception('PDF generation failed: $fileUrl');
+                                            }
+
+                                            // Use standardized filename: projectname_report.pdf
+                                            String filename = _makeProjectReportFilename(widget?.projectName, projId);
+
+                                            // If returned value is a data: URL already, handle it directly.
+                                            final urlStr = fileUrl.toString();
+
+                                            // Helper to get bytes either from HTTP URL or data: URL
+                                            Future<Uint8List> _getBytesFromUrl(String u) async {
+                                              if (u.startsWith('data:')) {
+                                                final base64Part = u.split(',').last;
+                                                return base64Decode(base64Part);
+                                              }
+                                              final resp = await http.get(Uri.parse(u));
+                                              if (resp.statusCode != 200) {
+                                                throw Exception('Failed to fetch file, status ${resp.statusCode}');
+                                              }
+                                              return resp.bodyBytes;
+                                            }
+
+                                            if (kIsWeb) {
+                                              // For web use the conditional web helper
+                                              final bytes = await _getBytesFromUrl(urlStr);
+                                              await webDownload(bytes, filename);
+                                            } else {
+                                              // Mobile/desktop: write bytes to a temporary file and open it
+                                              final bytes = await _getBytesFromUrl(urlStr);
+                                              final tmpDir = await getTemporaryDirectory();
+                                              final safeName = filename.replaceAll(RegExp(r'[\\/:"*?<>|]+'), '_');
+                                              final file = File('${tmpDir.path}/$safeName');
+                                              await file.writeAsBytes(bytes, flush: true);
+                                              // Open the file with the default PDF viewer (or let the user choose)
+                                              await OpenFilex.open(file.path);
+                                            }
+
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Report downloaded')),
+                                            );
+                                          } catch (e, st) {
+                                            print('store+fetch+download failed: $e\n$st');
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text('Failed to create/download report: ${e.toString()}')),
+                                            );
+                                          } finally {
+                                            safeSetState(() {});
+                                          }
                                         },
                                         text: 'Download SDR PDF',
                                         icon: Icon(
@@ -1633,16 +1711,14 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                         options: FFButtonOptions(
                                           width: double.infinity,
                                           height: 45.0,
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 0.0, 16.0, 0.0),
+                                          padding: EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 0.0),
                                           iconPadding:
                                               EdgeInsetsDirectional.fromSTEB(
                                                   0.0, 0.0, 0.0, 0.0),
                                           color: FlutterFlowTheme.of(context)
                                               .secondary,
-                                          textStyle: FlutterFlowTheme.of(
-                                                  context)
+                                          textStyle: FlutterFlowTheme.of(context)
                                               .titleSmall
                                               .override(
                                                 font: GoogleFonts.interTight(
@@ -1657,9 +1733,9 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                                           .titleSmall
                                                           .fontStyle,
                                                 ),
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
+                                                color: FlutterFlowTheme.of(
+                                                        context)
+                                                    .secondaryBackground,
                                                 letterSpacing: 0.0,
                                                 fontWeight:
                                                     FlutterFlowTheme.of(context)
@@ -1671,8 +1747,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                                         .fontStyle,
                                               ),
                                           elevation: 0.0,
-                                          borderRadius:
-                                              BorderRadius.circular(32.0),
+                                          borderRadius: BorderRadius.circular(32.0),
                                         ),
                                       ),
                                     ),
@@ -1767,8 +1842,7 @@ class _SdrDetailPageWidgetState extends State<SdrDetailPageWidget>
                                                           .fontStyle,
                                                 ),
                                             elevation: 0.0,
-                                            borderRadius:
-                                                BorderRadius.circular(32.0),
+                                            borderRadius: BorderRadius.circular(32.0),
                                           ),
                                         ),
                                       ),

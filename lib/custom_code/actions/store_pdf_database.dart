@@ -371,6 +371,13 @@ Future<Uint8List> generatePdfBytes(
 /// ✅ Fetch row, build data, generate PDF, upload to Supabase Storage
 Future<String?> storePdfDatabase(String projectId) async {
   try {
+    // Require an authenticated user for storage uploads.
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      print('PDF generation failed: unauthenticated user. Sign in required.');
+      return 'Error: Unauthenticated. Please sign in before generating/downloading the PDF.';
+    }
+
     final res = await Supabase.instance.client
         .from('projects')
         .select()
@@ -390,7 +397,8 @@ Future<String?> storePdfDatabase(String projectId) async {
         .from('recceresponses')
         .select()
         .eq('projectid', projectId)
-        .eq('stageNo', 2)
+        // DB column is "stageno" (lowercase) — use exact column name
+        .eq('stageno', 2)
         .limit(1);
 
     final Map<String, dynamic> recceResponses =
@@ -521,16 +529,43 @@ Future<String?> storePdfDatabase(String projectId) async {
     final now = DateTime.now();
     final fileName =
         '${now.toIso8601String().replaceAll(':', '-').replaceAll('.', '-')}.pdf';
-    const bucket = 'rece';
-    final path = 'receReport/$fileName';
+    // Use your actual Supabase storage bucket name
+    const bucket = 'project_uploads';
+    final path = 'pdf/$fileName';
+    try {
+      await Supabase.instance.client.storage.from(bucket).uploadBinary(
+            path,
+            finalPdfBytes,
+            fileOptions: const FileOptions(contentType: 'application/pdf'),
+          );
+    } on StorageException catch (se) {
+      print('Storage upload failed: ${se.message} (status: ${se.statusCode})');
+      return 'Error: Storage upload failed: ${se.message}';
+    } catch (se) {
+      print('Storage upload unknown error: $se');
+      return 'Error: Storage upload failed: ${se.toString()}';
+    }
 
-    await Supabase.instance.client.storage.from(bucket).uploadBinary(
-          path,
-          finalPdfBytes,
-          fileOptions: const FileOptions(contentType: 'application/pdf'),
-        );
-
-    return Supabase.instance.client.storage.from(bucket).getPublicUrl(path);
+    // Try to return a public URL. If the bucket is private this URL may not be accessible;
+    // for private buckets create a signed URL instead.
+    final publicUrl =
+        Supabase.instance.client.storage.from(bucket).getPublicUrl(path);
+    // If bucket is private, create a signed URL (valid for 1 hour) and return it.
+    // createSignedUrl may throw if not allowed; handle safely.
+    if (publicUrl == null ||
+        publicUrl.isEmpty ||
+        !publicUrl.contains('/')) {
+      try {
+        final signed = await Supabase.instance.client.storage
+            .from(bucket)
+            .createSignedUrl(path, 60 * 60); // expires in 1 hour
+        return signed;
+      } catch (e) {
+        print('Failed to create signed URL: $e');
+        return 'Error: Uploaded but failed to generate URL: ${e.toString()}';
+      }
+    }
+    return publicUrl;
   } catch (e) {
     print('PDF generation failed: $e');
     return 'Error: ${e.toString()}';

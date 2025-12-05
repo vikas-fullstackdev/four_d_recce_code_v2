@@ -8,6 +8,7 @@
 // import 'dart:ui';
 // import '/custom_code/actions/index.dart' as actions;
 // import '/index.dart';
+// import '/flutter_flow/nav/nav.dart'; // <-- ADD THIS LINE
 // import 'package:stop_watch_timer/stop_watch_timer.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
@@ -448,7 +449,7 @@
 //                                     ),
 //                               ),
 //                             ].divide(SizedBox(height: 12.0)),
-//                           ),
+//                           },
 //                         ),
 //                       ),
 //                     ),
@@ -527,7 +528,7 @@
 //                                     ),
 //                               ),
 //                             ].divide(SizedBox(height: 12.0)),
-//                           ),
+//                           },
 //                         ),
 //                       ),
 //                     ),
@@ -606,7 +607,7 @@
 //                                     ),
 //                               ),
 //                             ].divide(SizedBox(height: 12.0)),
-//                           ),
+//                           },
 //                         ),
 //                       ),
 //                     ),
@@ -685,7 +686,7 @@
 //                                     ),
 //                               ),
 //                             ].divide(SizedBox(height: 12.0)),
-//                           ),
+//                           },
 //                         ),
 //                       ),
 //                     ),
@@ -714,6 +715,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
+import '/flutter_flow/nav/nav.dart'; // <-- ADD THIS LINE
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -776,7 +778,8 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () async {
-        context.pushNamed(
+        // Navigate to HomePage via GoRouter so ShellRoute updates active tab.
+        context.goNamed(
           HomePageWidget.routeName,
           queryParameters: {
             'projectType': serializeParam(
@@ -854,6 +857,7 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: theme.primaryBackground,
+        bottomNavigationBar: null,
         appBar: AppBar(
           backgroundColor: theme.secondaryBackground,
           automaticallyImplyLeading: false,
@@ -861,7 +865,7 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Image.asset(
-                'assets/images/New4Dlogo.png',
+                'assets/images/logo.png',
                 width: 42.0,
                 height: 42.0,
                 fit: BoxFit.contain,
@@ -1069,39 +1073,39 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
                     ),
                     physics: const BouncingScrollPhysics(),
                     children: [
-                      _menuCard(
-                        context: context,
-                        title: 'Regional',
-                        icon: Icons.location_city,
-                        projectType: 'regional',
-                        iconBg: const Color(0xFFE3F2FD),
-                        iconColor: theme.primary,
-                      ),
-                      _menuCard(
-                        context: context,
-                        title: 'Corporate',
-                        icon: Icons.business,
-                        projectType: 'corporate',
-                        iconBg: const Color(0xFFF3E5F5),
-                        iconColor: Colors.purple,
-                      ),
-                      _menuCard(
-                        context: context,
-                        title: 'F&B',
-                        icon: Icons.restaurant,
-                        projectType: 'fandb',
-                        iconBg: const Color(0xFFE8F5E8),
-                        iconColor: theme.success,
-                      ),
-                      _menuCard(
-                        context: context,
-                        title: 'International Sites',
-                        icon: Icons.public,
-                        projectType: 'international',
-                        iconBg: const Color(0xFFFEF7E0),
-                        iconColor: Colors.orange,
-                      ),
-                    ],
+                     _menuCard(
+                       context: context,
+                       title: 'Corporate',
+                       icon: Icons.business,
+                       projectType: 'corporate',
+                       iconBg: const Color(0xFFF3E5F5),
+                       iconColor: Colors.purple,
+                     ),
+                     _menuCard(
+                       context: context,
+                       title: 'International Sites',
+                       icon: Icons.public,
+                       projectType: 'international',
+                       iconBg: const Color(0xFFFEF7E0),
+                       iconColor: Colors.orange,
+                     ),
+                     _menuCard(
+                       context: context,
+                       title: 'F&B',
+                       icon: Icons.restaurant,
+                       projectType: 'fandb',
+                       iconBg: const Color(0xFFE8F5E8),
+                       iconColor: theme.success,
+                     ),
+                    _menuCard(
+                       context: context,
+                       title: 'Regional',
+                       icon: Icons.location_city,
+                       projectType: 'regional',
+                       iconBg: const Color(0xFFE3F2FD),
+                       iconColor: theme.primary,
+                     ),
+                   ],
                   ),
                 ),
               ]

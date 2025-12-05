@@ -219,13 +219,13 @@
     },
     {
       "name": "file_selector_linux",
-      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.3+3",
+      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
     {
       "name": "file_selector_macos",
-      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.4+6",
+      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -675,15 +675,15 @@
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/path_provider_android-2.2.10",
+      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/path_provider_android-2.2.22",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.9"
     },
     {
       "name": "path_provider_foundation",
-      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0",
+      "rootUri": "file:///home/vikas/.pub-cache/hosted/pub.dev/path_provider_foundation-2.5.1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.9"
     },
     {
       "name": "path_provider_linux",

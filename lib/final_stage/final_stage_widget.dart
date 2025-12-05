@@ -54,124 +54,115 @@ class _FinalStageWidgetState extends State<FinalStageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: 0.6,
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
-        child: Scaffold(
-          key: scaffoldKey,
-          backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-          appBar: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            automaticallyImplyLeading: false,
-            title: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Image.asset(
-                  'assets/images/New4Dlogo.png',
-                  width: 42.0,
-                  height: 42.0,
-                  fit: BoxFit.contain,
-                ),
-                Text(
-                  'Final ',
-                  style: FlutterFlowTheme.of(context).titleMedium.override(
-                        font: GoogleFonts.interTight(
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .titleMedium
-                              .fontStyle,
-                        ),
-                        letterSpacing: 0.0,
+    // Keep scaffold/appbar fully opaque; apply opacity only to body content if needed.
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        bottomNavigationBar: null,
+        appBar: AppBar(
+          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Image.asset(
+                'assets/images/logo.png',
+                width: 42.0,
+                height: 42.0,
+                fit: BoxFit.contain,
+              ),
+              Text(
+                'Final ',
+                style: FlutterFlowTheme.of(context).titleMedium.override(
+                      font: GoogleFonts.interTight(
                         fontWeight: FontWeight.w600,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .titleMedium
+                            .fontStyle,
                       ),
-                ),
-              ].divide(SizedBox(width: 12.0)),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        if (_model.isDeviceOnlineTImer == true)
-                          FlutterFlowIconButton(
-                            borderRadius: 8.0,
-                            buttonSize: 40.0,
-                            icon: Icon(
-                              Icons.online_prediction,
-                              color: Color(0xFF00FF00),
-                              size: 24.0,
-                            ),
-                            onPressed: () {
-                              print('IconButton pressed ...');
-                            },
+                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                    ),
+              ),
+            ].divide(SizedBox(width: 12.0)),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      if (_model.isDeviceOnlineTImer == true)
+                        FlutterFlowIconButton(
+                          borderRadius: 8.0,
+                          buttonSize: 40.0,
+                          icon: Icon(
+                            Icons.online_prediction,
+                            color: Color(0xFF00FF00),
+                            size: 24.0,
                           ),
-                        if (_model.isDeviceOnlineTImer == false)
-                          FlutterFlowIconButton(
-                            borderRadius: 8.0,
-                            buttonSize: 40.0,
-                            icon: Icon(
-                              Icons.cloud_off,
-                              color: Color(0xFFFF0000),
-                              size: 24.0,
-                            ),
-                            onPressed: () {
-                              print('IconButton pressed ...');
-                            },
+                          onPressed: () {
+                            print('IconButton pressed ...');
+                          },
+                        ),
+                      if (_model.isDeviceOnlineTImer == false)
+                        FlutterFlowIconButton(
+                          borderRadius: 8.0,
+                          buttonSize: 40.0,
+                          icon: Icon(
+                            Icons.cloud_off,
+                            color: Color(0xFFFF0000),
+                            size: 24.0,
                           ),
-                        Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: FlutterFlowTimer(
-                            key: ValueKey('homeTimer'),
-                            initialTime: _model.timerInitialTimeMs,
-                            getDisplayTime: (value) =>
-                                StopWatchTimer.getDisplayTime(
-                              value,
-                              hours: false,
-                              milliSecond: false,
-                            ),
-                            controller: _model.timerController,
-                            updateStateInterval: Duration(milliseconds: 1000),
-                            onChanged: (value, displayTime, shouldUpdate) {
-                              _model.timerMilliseconds = value;
-                              _model.timerValue = displayTime;
-                              if (shouldUpdate) safeSetState(() {});
-                            },
-                            onEnded: () async {
-                              _model.timerController.onStartTimer();
-                              _model.isDeviceOnlineTImer =
-                                  await actions.isDeviceOnline();
-                              _model.timerController.timer
-                                  .setPresetTime(mSec: 30000, add: false);
-                              _model.timerController.onResetTimer();
+                          onPressed: () {
+                            print('IconButton pressed ...');
+                          },
+                        ),
+                      Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: FlutterFlowTimer(
+                          key: ValueKey('homeTimer'),
+                          initialTime: _model.timerInitialTimeMs,
+                          getDisplayTime: (value) =>
+                              StopWatchTimer.getDisplayTime(
+                            value,
+                            hours: false,
+                            milliSecond: false,
+                          ),
+                          controller: _model.timerController,
+                          updateStateInterval: Duration(milliseconds: 1000),
+                          onChanged: (value, displayTime, shouldUpdate) {
+                            _model.timerMilliseconds = value;
+                            _model.timerValue = displayTime;
+                            if (shouldUpdate) safeSetState(() {});
+                          },
+                          onEnded: () async {
+                            _model.timerController.onStartTimer();
+                            _model.isDeviceOnlineTImer =
+                                await actions.isDeviceOnline();
+                            _model.timerController.timer
+                                .setPresetTime(mSec: 30000, add: false);
+                            _model.timerController.onResetTimer();
 
-                              _model.timerController.onStartTimer();
+                            _model.timerController.onStartTimer();
 
-                              safeSetState(() {});
-                            },
-                            textAlign: TextAlign.start,
-                            style: FlutterFlowTheme.of(context)
-                                .headlineSmall
-                                .override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .headlineSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .headlineSmall
-                                        .fontStyle,
-                                  ),
-                                  fontSize: 0.0,
-                                  letterSpacing: 0.0,
+                            safeSetState(() {});
+                          },
+                          textAlign: TextAlign.start,
+                          style: FlutterFlowTheme.of(context)
+                              .headlineSmall
+                              .override(
+                                font: GoogleFonts.interTight(
                                   fontWeight: FlutterFlowTheme.of(context)
                                       .headlineSmall
                                       .fontWeight,
@@ -179,51 +170,63 @@ class _FinalStageWidgetState extends State<FinalStageWidget> {
                                       .headlineSmall
                                       .fontStyle,
                                 ),
-                          ),
+                                fontSize: 0.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .headlineSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .headlineSmall
+                                    .fontStyle,
+                              ),
                         ),
-                        if (responsiveVisibility(
-                          context: context,
-                          phone: false,
-                          tablet: false,
-                          tabletLandscape: false,
-                          desktop: false,
-                        ))
-                          FlutterFlowIconButton(
-                            borderRadius: 8.0,
-                            buttonSize: 40.0,
-                            icon: Icon(
-                              Icons.receipt_long,
-                              color: FlutterFlowTheme.of(context).secondary,
-                              size: 24.0,
-                            ),
-                            onPressed: () async {
-                              context.goNamed(ReceTemplateWidget.routeName);
-                            },
-                          ),
-                      ],
-                    ),
-                    FlutterFlowIconButton(
-                      borderRadius: 20.0,
-                      buttonSize: 40.0,
-                      fillColor: FlutterFlowTheme.of(context).primary,
-                      icon: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 20.0,
                       ),
-                      onPressed: () async {
-                        context.pushNamed(ProfileWidget.routeName);
-                      },
+                      if (responsiveVisibility(
+                        context: context,
+                        phone: false,
+                        tablet: false,
+                        tabletLandscape: false,
+                        desktop: false,
+                      ))
+                        FlutterFlowIconButton(
+                          borderRadius: 8.0,
+                          buttonSize: 40.0,
+                          icon: Icon(
+                            Icons.receipt_long,
+                            color: FlutterFlowTheme.of(context).secondary,
+                            size: 24.0,
+                          ),
+                          onPressed: () async {
+                            context.goNamed(ReceTemplateWidget.routeName);
+                          },
+                        ),
+                    ],
+                  ),
+                  FlutterFlowIconButton(
+                    borderRadius: 20.0,
+                    buttonSize: 40.0,
+                    fillColor: FlutterFlowTheme.of(context).primary,
+                    icon: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 20.0,
                     ),
-                  ].divide(SizedBox(width: 8.0)),
-                ),
+                    onPressed: () async {
+                      context.pushNamed(ProfileWidget.routeName);
+                    },
+                  ),
+                ].divide(SizedBox(width: 8.0)),
               ),
-            ],
-            centerTitle: false,
-            elevation: 0.0,
-          ),
-          body: SafeArea(
-            top: true,
+            ),
+          ],
+          centerTitle: false,
+          elevation: 0.0,
+        ),
+        body: SafeArea(
+          top: true,
+          child: Opacity(
+            // if you want the page body dimmed keep this; otherwise set opacity to 1.0 or remove Opacity
+            opacity: 0.6,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [],

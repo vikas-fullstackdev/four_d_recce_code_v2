@@ -124,16 +124,16 @@ class _MyAppState extends State<MyApp> {
 }
 
 class NavBarPage extends StatefulWidget {
-  NavBarPage({
+  const NavBarPage({
     Key? key,
     this.initialPage,
-    this.page,
-    this.disableResizeToAvoidBottomInset = false,
+    this.page, // child page provided by ShellRoute
+    this.disableResizeToAvoidBottomInset = false, // added property with default
   }) : super(key: key);
 
   final String? initialPage;
   final Widget? page;
-  final bool disableResizeToAvoidBottomInset;
+  final bool disableResizeToAvoidBottomInset; // added property
 
   @override
   _NavBarPageState createState() => _NavBarPageState();
@@ -160,65 +160,123 @@ class _NavBarPageState extends State<NavBarPage> {
       'qc': QcWidget(),
       'finalStage': FinalStageWidget(),
     };
-    final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
+
+    // Determine which page name to use for the current selected index.
+    // Prefer the ShellRoute-provided page (widget.page) when present so the
+    // bottom nav highlights the correct tab after a GoRouter navigation.
+    String currentPageName = _currentPageName;
+    if (widget.page != null) {
+      final childTypeName = widget.page!.runtimeType.toString();
+      if (childTypeName == OpeningScreenWidget().runtimeType.toString()) {
+        currentPageName = 'OpeningScreen';
+      } else if (childTypeName == HomePageWidget().runtimeType.toString()) {
+        currentPageName = 'HomePage';
+      } else if (childTypeName == SdrDetailPageWidget().runtimeType.toString()) {
+        currentPageName = 'sdrDetailPage';
+      } else if (childTypeName == QcWidget().runtimeType.toString()) {
+        currentPageName = 'qc';
+      } else if (childTypeName == FinalStageWidget().runtimeType.toString()) {
+        currentPageName = 'finalStage';
+      }
+    }
+
+    final currentIndex = tabs.keys.toList().indexOf(currentPageName);
+    // Ensure index is valid for BottomNavigationBar (cannot be -1)
+    final safeCurrentIndex = currentIndex >= 0 ? currentIndex : 0;
+
+    // Hide bottom nav for unauthenticated screens provided by ShellRoute
+    // or when the current route path is an unauthenticated route
+    // (covers the initial visit '/').
+    // Use the helper extension in nav.dart to get the current router location.
+    final path = Uri.parse(GoRouter.of(context).getCurrentLocation()).path;
+    final unauthPaths = {'/', WelcomeScreenWidget.routePath, SignInWidget.routePath, SignUpWidget.routePath};
+    final childTypeName = widget.page?.runtimeType.toString();
+    final hideNavForUnauthScreens =
+        unauthPaths.contains(path) ||
+        (childTypeName != null &&
+            ['WelcomeScreenWidget', 'SignInWidget', 'SignUpWidget'].contains(childTypeName));
 
     return Scaffold(
       resizeToAvoidBottomInset: !widget.disableResizeToAvoidBottomInset,
-      body: _currentPage ?? tabs[_currentPageName],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (i) => safeSetState(() {
-          _currentPage = null;
-          _currentPageName = tabs.keys.toList()[i];
-        }),
-        backgroundColor: FlutterFlowTheme.of(context).alternate,
-        selectedItemColor: FlutterFlowTheme.of(context).secondary,
-        unselectedItemColor: FlutterFlowTheme.of(context).secondaryText,
-        showSelectedLabels: true,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+      // Prefer the ShellRoute-provided page when present; otherwise use the normal tab content:
+      body: widget.page ?? tabs[_currentPageName],
+      bottomNavigationBar: hideNavForUnauthScreens
+          ? null
+          : BottomNavigationBar(
+              currentIndex: safeCurrentIndex,
+              onTap: (i) {
+                // Map tab index -> route name
+                final routeNames = [
+                  OpeningScreenWidget.routeName, // Home
+                  HomePageWidget.routeName, // Projects
+                  SdrDetailPageWidget.routeName, // Recce
+                  QcWidget.routeName, // QC
+                  FinalStageWidget.routeName, // Final
+                ];
+
+                safeSetState(() {
+                  _currentPage = null;
+                  _currentPageName = tabs.keys.toList()[i];
+                });
+
+                // Navigate to the selected route so router shows the correct page.
+                // Use context.goNamed to replace location.
+                if (i >= 0 && i < routeNames.length) {
+                  try {
+                    context.goNamed(routeNames[i]);
+                  } catch (_) {
+                    // Fallback: do nothing if navigation fails
+                  }
+                }
+              },
+              backgroundColor: FlutterFlowTheme.of(context).alternate,
+              selectedItemColor: FlutterFlowTheme.of(context).secondary,
+              unselectedItemColor: FlutterFlowTheme.of(context).secondaryText,
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              type: BottomNavigationBarType.fixed,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  label: 'Home',
+                  tooltip: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.view_list,
+                    size: 25.0,
+                  ),
+                  label: 'Projects',
+                  tooltip: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.edit_square,
+                    size: 24.0,
+                  ),
+                  label: 'Recce',
+                  tooltip: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.check,
+                    size: 24.0,
+                  ),
+                  label: 'QC',
+                  tooltip: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.star,
+                    size: 24.0,
+                  ),
+                  label: 'Final',
+                  tooltip: '',
+                ),
+              ],
             ),
-            label: 'Home',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.view_list,
-              size: 25.0,
-            ),
-            label: 'Projects',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.edit_square,
-              size: 24.0,
-            ),
-            label: 'Recce',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.checklist,
-              size: 24.0,
-            ),
-            label: 'QC',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.apps,
-              size: 24.0,
-            ),
-            label: 'Final',
-            tooltip: '',
-          )
-        ],
-      ),
     );
   }
 }

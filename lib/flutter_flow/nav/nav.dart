@@ -80,1047 +80,1052 @@ class AppStateNotifier extends ChangeNotifier {
   }
 }
 
-GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
-      initialLocation: '/',
-      debugLogDiagnostics: true,
-      refreshListenable: appStateNotifier,
-      navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? NavBarPage() : WelcomeScreenWidget(),
-      routes: [
-        FFRoute(
-          name: '_initialize',
-          path: '/',
-          builder: (context, _) =>
-              appStateNotifier.loggedIn ? NavBarPage() : WelcomeScreenWidget(),
-        ),
-        FFRoute(
-          name: HomePageWidget.routeName,
-          path: HomePageWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'HomePage')
-              : HomePageWidget(
-                  projectType: params.getParam(
-                    'projectType',
-                    ParamType.String,
-                  ),
-                ),
-        ),
-        FFRoute(
-          name: SignInWidget.routeName,
-          path: SignInWidget.routePath,
-          builder: (context, params) => SignInWidget(),
-        ),
-        FFRoute(
-          name: SignUpWidget.routeName,
-          path: SignUpWidget.routePath,
-          builder: (context, params) => SignUpWidget(),
-        ),
-        FFRoute(
-          name: ForgetPasswordWidget.routeName,
-          path: ForgetPasswordWidget.routePath,
-          builder: (context, params) => ForgetPasswordWidget(),
-        ),
-        FFRoute(
-          name: ResetpasswordWidget.routeName,
-          path: ResetpasswordWidget.routePath,
-          builder: (context, params) => ResetpasswordWidget(),
-        ),
-        FFRoute(
-          name: WelcomeScreenWidget.routeName,
-          path: WelcomeScreenWidget.routePath,
-          builder: (context, params) => WelcomeScreenWidget(),
-        ),
-        FFRoute(
-          name: ReceTemplateWidget.routeName,
-          path: ReceTemplateWidget.routePath,
-          builder: (context, params) => ReceTemplateWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-            reccestageid: params.getParam(
-              'reccestageid',
-              ParamType.String,
-            ),
-            stageNo: params.getParam(
-              'stageNo',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AddprojectWidget.routeName,
-          path: AddprojectWidget.routePath,
-          builder: (context, params) => AddprojectWidget(
-            projectType: params.getParam(
-              'projectType',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ProjectDetailPageWidget.routeName,
-          path: ProjectDetailPageWidget.routePath,
-          builder: (context, params) => ProjectDetailPageWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: DynamicRecceTemplateWidget.routeName,
-          path: DynamicRecceTemplateWidget.routePath,
-          builder: (context, params) => DynamicRecceTemplateWidget(
-            currentPageIndex: params.getParam(
-              'currentPageIndex',
-              ParamType.int,
-            ),
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: TaskWidget.routeName,
-          path: TaskWidget.routePath,
-          builder: (context, params) => TaskWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: DynamicRecceTemplateCopyWidget.routeName,
-          path: DynamicRecceTemplateCopyWidget.routePath,
-          builder: (context, params) => DynamicRecceTemplateCopyWidget(
-            currentPageIndex: params.getParam(
-              'currentPageIndex',
-              ParamType.int,
-            ),
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: DynamicRecceTemplate2Widget.routeName,
-          path: DynamicRecceTemplate2Widget.routePath,
-          builder: (context, params) => DynamicRecceTemplate2Widget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: MessagesWidget.routeName,
-          path: MessagesWidget.routePath,
-          builder: (context, params) => MessagesWidget(),
-        ),
-        FFRoute(
-          name: QueryWidget.routeName,
-          path: QueryWidget.routePath,
-          builder: (context, params) => QueryWidget(),
-        ),
-        FFRoute(
-          name: UploadSiteVisitInfoWidget.routeName,
-          path: UploadSiteVisitInfoWidget.routePath,
-          builder: (context, params) => UploadSiteVisitInfoWidget(),
-        ),
-        FFRoute(
-          name: UploadQcVisitWidget.routeName,
-          path: UploadQcVisitWidget.routePath,
-          builder: (context, params) => UploadQcVisitWidget(),
-        ),
-        FFRoute(
-          name: UploadAssetVerificationWidget.routeName,
-          path: UploadAssetVerificationWidget.routePath,
-          builder: (context, params) => UploadAssetVerificationWidget(),
-        ),
-        FFRoute(
-          name: AddStoreWidget.routeName,
-          path: AddStoreWidget.routePath,
-          builder: (context, params) => AddStoreWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            uploadSiteLocation: params.getParam(
-              'uploadSiteLocation',
-              ParamType.FFUploadedFile,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: MakeQcVisitWidget.routeName,
-          path: MakeQcVisitWidget.routePath,
-          builder: (context, params) => MakeQcVisitWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            question: params.getParam(
-              'question',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: StoreAnalysisWidget.routeName,
-          path: StoreAnalysisWidget.routePath,
-          builder: (context, params) => StoreAnalysisWidget(),
-        ),
-        FFRoute(
-          name: StoreAnalysisDetailsWidget.routeName,
-          path: StoreAnalysisDetailsWidget.routePath,
-          builder: (context, params) => StoreAnalysisDetailsWidget(),
-        ),
-        FFRoute(
-          name: QcVisitFormWidget.routeName,
-          path: QcVisitFormWidget.routePath,
-          builder: (context, params) => QcVisitFormWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AddStoreNewWidget.routeName,
-          path: AddStoreNewWidget.routePath,
-          builder: (context, params) => AddStoreNewWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            uploadSiteLocation: params.getParam(
-              'uploadSiteLocation',
-              ParamType.FFUploadedFile,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: MakeQcVisitCopyWidget.routeName,
-          path: MakeQcVisitCopyWidget.routePath,
-          builder: (context, params) => MakeQcVisitCopyWidget(),
-        ),
-        FFRoute(
-          name: MakeQc2VisitWidget.routeName,
-          path: MakeQc2VisitWidget.routePath,
-          builder: (context, params) => MakeQc2VisitWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            question: params.getParam(
-              'question',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: MakeAssetVerificationWidget.routeName,
-          path: MakeAssetVerificationWidget.routePath,
-          builder: (context, params) => MakeAssetVerificationWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            question: params.getParam(
-              'question',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AssetVerificationFormWidget.routeName,
-          path: AssetVerificationFormWidget.routePath,
-          builder: (context, params) => AssetVerificationFormWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: Qc2VisitFormWidget.routeName,
-          path: Qc2VisitFormWidget.routePath,
-          builder: (context, params) => Qc2VisitFormWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: QcDetailsWidget.routeName,
-          path: QcDetailsWidget.routePath,
-          builder: (context, params) => QcDetailsWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: Qc2DetailsWidget.routeName,
-          path: Qc2DetailsWidget.routePath,
-          builder: (context, params) => Qc2DetailsWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AssetVerificationDetailsWidget.routeName,
-          path: AssetVerificationDetailsWidget.routePath,
-          builder: (context, params) => AssetVerificationDetailsWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: QcDetailPageWidget.routeName,
-          path: QcDetailPageWidget.routePath,
-          builder: (context, params) => QcDetailPageWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AvDetailPageWidget.routeName,
-          path: AvDetailPageWidget.routePath,
-          builder: (context, params) => AvDetailPageWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: SdrDetailPageWidget.routeName,
-          path: SdrDetailPageWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'sdrDetailPage')
-              : SdrDetailPageWidget(
-                  projectId: params.getParam(
-                    'projectId',
-                    ParamType.String,
-                  ),
-                  projectName: params.getParam(
-                    'projectName',
-                    ParamType.String,
-                  ),
-                  proectImage: params.getParam(
-                    'proectImage',
-                    ParamType.String,
-                  ),
-                  recestageId: params.getParam(
-                    'recestageId',
-                    ParamType.String,
-                  ),
-                ),
-        ),
-        FFRoute(
-          name: QcDetailsCopyWidget.routeName,
-          path: QcDetailsCopyWidget.routePath,
-          builder: (context, params) => QcDetailsCopyWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: QceditDetailsFormWidget.routeName,
-          path: QceditDetailsFormWidget.routePath,
-          builder: (context, params) => QceditDetailsFormWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            receresponseId: params.getParam(
-              'receresponseId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: QchistoryWidget.routeName,
-          path: QchistoryWidget.routePath,
-          builder: (context, params) => QchistoryWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            responseId: params.getParam(
-              'responseId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AddProjectOfflineWidget.routeName,
-          path: AddProjectOfflineWidget.routePath,
-          builder: (context, params) => AddProjectOfflineWidget(),
-        ),
-        FFRoute(
-          name: QcDetailsHistoryWidget.routeName,
-          path: QcDetailsHistoryWidget.routePath,
-          builder: (context, params) => QcDetailsHistoryWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            creatDate: params.getParam(
-              'creatDate',
-              ParamType.DateTime,
-            ),
-            responseId: params.getParam(
-              'responseId',
-              ParamType.String,
-            ),
-            historyId: params.getParam(
-              'historyId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: SelectWorkCopyWidget.routeName,
-          path: SelectWorkCopyWidget.routePath,
-          builder: (context, params) => SelectWorkCopyWidget(),
-        ),
-        FFRoute(
-          name: TaskCopyWidget.routeName,
-          path: TaskCopyWidget.routePath,
-          builder: (context, params) => TaskCopyWidget(),
-        ),
-        FFRoute(
-          name: ProfileWidget.routeName,
-          path: ProfileWidget.routePath,
-          builder: (context, params) => ProfileWidget(),
-        ),
-        FFRoute(
-          name: SelectStageForPDFWidget.routeName,
-          path: SelectStageForPDFWidget.routePath,
-          builder: (context, params) => SelectStageForPDFWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ProjectDetailScreenTestWidget.routeName,
-          path: ProjectDetailScreenTestWidget.routePath,
-          builder: (context, params) => ProjectDetailScreenTestWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: SelectStageForPDFPageWidget.routeName,
-          path: SelectStageForPDFPageWidget.routePath,
-          builder: (context, params) => SelectStageForPDFPageWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ReceDetailsWidget.routeName,
-          path: ReceDetailsWidget.routePath,
-          builder: (context, params) => ReceDetailsWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            recceflatJson: params.getParam(
-              'recceflatJson',
-              ParamType.JSON,
-            ),
-            receresponseid: params.getParam(
-              'receresponseid',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: UploadDesignCopyWidget.routeName,
-          path: UploadDesignCopyWidget.routePath,
-          builder: (context, params) => UploadDesignCopyWidget(),
-        ),
-        FFRoute(
-          name: EditProfileWidget.routeName,
-          path: EditProfileWidget.routePath,
-          builder: (context, params) => EditProfileWidget(),
-        ),
-        FFRoute(
-          name: AccountSettingsWidget.routeName,
-          path: AccountSettingsWidget.routePath,
-          builder: (context, params) => AccountSettingsWidget(
-            password: params.getParam(
-              'password',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: EditPasswordPageWidget.routeName,
-          path: EditPasswordPageWidget.routePath,
-          builder: (context, params) => EditPasswordPageWidget(),
-        ),
-        FFRoute(
-          name: EditEmailPgaeWidget.routeName,
-          path: EditEmailPgaeWidget.routePath,
-          builder: (context, params) => EditEmailPgaeWidget(
-            password: params.getParam(
-              'password',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: TaskCopy2Widget.routeName,
-          path: TaskCopy2Widget.routePath,
-          builder: (context, params) => TaskCopy2Widget(),
-        ),
-        FFRoute(
-          name: StoreDetailPageWidget.routeName,
-          path: StoreDetailPageWidget.routePath,
-          builder: (context, params) => StoreDetailPageWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: TaskCopy3Widget.routeName,
-          path: TaskCopy3Widget.routePath,
-          builder: (context, params) => TaskCopy3Widget(),
-        ),
-        FFRoute(
-          name: ProjectSettingsWidget.routeName,
-          path: ProjectSettingsWidget.routePath,
-          builder: (context, params) => ProjectSettingsWidget(
-            password: params.getParam(
-              'password',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: DynamicRecceTemplate3Widget.routeName,
-          path: DynamicRecceTemplate3Widget.routePath,
-          builder: (context, params) => DynamicRecceTemplate3Widget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AssignReccePageWidget.routeName,
-          path: AssignReccePageWidget.routePath,
-          builder: (context, params) => AssignReccePageWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ReceDetailsHistoryWidget.routeName,
-          path: ReceDetailsHistoryWidget.routePath,
-          builder: (context, params) => ReceDetailsHistoryWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            recceflatJson: params.getParam(
-              'recceflatJson',
-              ParamType.JSON,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: DynamicRecceTemplate3CopyWidget.routeName,
-          path: DynamicRecceTemplate3CopyWidget.routePath,
-          builder: (context, params) => DynamicRecceTemplate3CopyWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ReceTemplateEditWidget.routeName,
-          path: ReceTemplateEditWidget.routePath,
-          builder: (context, params) => ReceTemplateEditWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-            reccestageid: params.getParam(
-              'reccestageid',
-              ParamType.String,
-            ),
-            stageNo: params.getParam(
-              'stageNo',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ReceTemplateListWidget.routeName,
-          path: ReceTemplateListWidget.routePath,
-          builder: (context, params) => ReceTemplateListWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: UsersListWidget.routeName,
-          path: UsersListWidget.routePath,
-          builder: (context, params) => UsersListWidget(),
-        ),
-        FFRoute(
-          name: AssignRolesWidget.routeName,
-          path: AssignRolesWidget.routePath,
-          builder: (context, params) => AssignRolesWidget(
-            userId: params.getParam(
-              'userId',
-              ParamType.String,
-            ),
-            uaerName: params.getParam(
-              'uaerName',
-              ParamType.String,
-            ),
-            userEmail: params.getParam(
-              'userEmail',
-              ParamType.String,
-            ),
-            userimage: params.getParam(
-              'userimage',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AddStoreNewAnnotedImageWidget.routeName,
-          path: AddStoreNewAnnotedImageWidget.routePath,
-          builder: (context, params) => AddStoreNewAnnotedImageWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            uploadSiteLocation: params.getParam(
-              'uploadSiteLocation',
-              ParamType.FFUploadedFile,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: RecceTemplateWorkingWidget.routeName,
-          path: RecceTemplateWorkingWidget.routePath,
-          builder: (context, params) => RecceTemplateWorkingWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-            reccestageid: params.getParam(
-              'reccestageid',
-              ParamType.String,
-            ),
-            stageNo: params.getParam(
-              'stageNo',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AssignUserInProjectWidget.routeName,
-          path: AssignUserInProjectWidget.routePath,
-          builder: (context, params) => AssignUserInProjectWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: ReceTemplateWorkingWidget.routeName,
-          path: ReceTemplateWorkingWidget.routePath,
-          builder: (context, params) => ReceTemplateWorkingWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-            reccestageid: params.getParam(
-              'reccestageid',
-              ParamType.String,
-            ),
-            stageNo: params.getParam(
-              'stageNo',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AnnotatedImagesForStoreDetailWidget.routeName,
-          path: AnnotatedImagesForStoreDetailWidget.routePath,
-          builder: (context, params) => AnnotatedImagesForStoreDetailWidget(
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-            proectImage: params.getParam(
-              'proectImage',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: AssignUserInProjectCopyWidget.routeName,
-          path: AssignUserInProjectCopyWidget.routePath,
-          builder: (context, params) => AssignUserInProjectCopyWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: RemoveUsersInProjectWidget.routeName,
-          path: RemoveUsersInProjectWidget.routePath,
-          builder: (context, params) => RemoveUsersInProjectWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: TaskCopy4Widget.routeName,
-          path: TaskCopy4Widget.routePath,
-          builder: (context, params) => TaskCopy4Widget(),
-        ),
-        FFRoute(
-          name: AssignUserInProjectCopy2Widget.routeName,
-          path: AssignUserInProjectCopy2Widget.routePath,
-          builder: (context, params) => AssignUserInProjectCopy2Widget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: RemoveUserFromProjectWidget.routeName,
-          path: RemoveUserFromProjectWidget.routePath,
-          builder: (context, params) => RemoveUserFromProjectWidget(
-            recestageId: params.getParam(
-              'recestageId',
-              ParamType.String,
-            ),
-            projectId: params.getParam(
-              'projectId',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: TaskNewWidget.routeName,
-          path: TaskNewWidget.routePath,
-          builder: (context, params) => TaskNewWidget(),
-        ),
-        FFRoute(
-          name: EditProjectWidget.routeName,
-          path: EditProjectWidget.routePath,
-          builder: (context, params) => EditProjectWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: OpeningScreenWidget.routeName,
-          path: OpeningScreenWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'OpeningScreen')
-              : OpeningScreenWidget(),
-        ),
-        FFRoute(
-          name: ReceTemplateCopyWidget.routeName,
-          path: ReceTemplateCopyWidget.routePath,
-          builder: (context, params) => ReceTemplateCopyWidget(
-            projectID: params.getParam(
-              'projectID',
-              ParamType.String,
-            ),
-            reccestageid: params.getParam(
-              'reccestageid',
-              ParamType.String,
-            ),
-            stageNo: params.getParam(
-              'stageNo',
-              ParamType.String,
-            ),
-            projectName: params.getParam(
-              'projectName',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
-          name: QcWidget.routeName,
-          path: QcWidget.routePath,
-          builder: (context, params) =>
-              params.isEmpty ? NavBarPage(initialPage: 'qc') : QcWidget(),
-        ),
-        FFRoute(
-          name: FinalStageWidget.routeName,
-          path: FinalStageWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'finalStage')
-              : FinalStageWidget(),
-        )
-      ].map((r) => r.toRoute(appStateNotifier)).toList(),
-    );
+GoRouter createRouter(AppStateNotifier appStateNotifier) {
+  // Build child GoRoute list from existing FFRoute definitions.
+  final childRoutes = [
+    FFRoute(
+      name: '_initialize',
+      path: '/',
+      // Return the actual opening or welcome page — ShellRoute will wrap it
+      builder: (context, _) =>
+          appStateNotifier.loggedIn ? OpeningScreenWidget() : WelcomeScreenWidget(),
+    ),
+    FFRoute(
+      name: HomePageWidget.routeName,
+      path: HomePageWidget.routePath,
+      builder: (context, params) => HomePageWidget(
+        projectType: params.getParam(
+          'projectType',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: SignInWidget.routeName,
+      path: SignInWidget.routePath,
+      builder: (context, params) => SignInWidget(),
+    ),
+    FFRoute(
+      name: SignUpWidget.routeName,
+      path: SignUpWidget.routePath,
+      builder: (context, params) => SignUpWidget(),
+    ),
+    FFRoute(
+      name: ForgetPasswordWidget.routeName,
+      path: ForgetPasswordWidget.routePath,
+      builder: (context, params) => ForgetPasswordWidget(),
+    ),
+    FFRoute(
+      name: ResetpasswordWidget.routeName,
+      path: ResetpasswordWidget.routePath,
+      builder: (context, params) => ResetpasswordWidget(),
+    ),
+    FFRoute(
+      name: WelcomeScreenWidget.routeName,
+      path: WelcomeScreenWidget.routePath,
+      builder: (context, params) => WelcomeScreenWidget(),
+    ),
+    FFRoute(
+      name: ReceTemplateWidget.routeName,
+      path: ReceTemplateWidget.routePath,
+      builder: (context, params) => ReceTemplateWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+        reccestageid: params.getParam(
+          'reccestageid',
+          ParamType.String,
+        ),
+        stageNo: params.getParam(
+          'stageNo',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AddprojectWidget.routeName,
+      path: AddprojectWidget.routePath,
+      builder: (context, params) => AddprojectWidget(
+        projectType: params.getParam(
+          'projectType',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ProjectDetailPageWidget.routeName,
+      path: ProjectDetailPageWidget.routePath,
+      builder: (context, params) => ProjectDetailPageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: DynamicRecceTemplateWidget.routeName,
+      path: DynamicRecceTemplateWidget.routePath,
+      builder: (context, params) => DynamicRecceTemplateWidget(
+        currentPageIndex: params.getParam(
+          'currentPageIndex',
+          ParamType.int,
+        ),
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: TaskWidget.routeName,
+      path: TaskWidget.routePath,
+      builder: (context, params) => TaskWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: DynamicRecceTemplateCopyWidget.routeName,
+      path: DynamicRecceTemplateCopyWidget.routePath,
+      builder: (context, params) => DynamicRecceTemplateCopyWidget(
+        currentPageIndex: params.getParam(
+          'currentPageIndex',
+          ParamType.int,
+        ),
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: DynamicRecceTemplate2Widget.routeName,
+      path: DynamicRecceTemplate2Widget.routePath,
+      builder: (context, params) => DynamicRecceTemplate2Widget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: MessagesWidget.routeName,
+      path: MessagesWidget.routePath,
+      builder: (context, params) => MessagesWidget(),
+    ),
+    FFRoute(
+      name: QueryWidget.routeName,
+      path: QueryWidget.routePath,
+      builder: (context, params) => QueryWidget(),
+    ),
+    FFRoute(
+      name: UploadSiteVisitInfoWidget.routeName,
+      path: UploadSiteVisitInfoWidget.routePath,
+      builder: (context, params) => UploadSiteVisitInfoWidget(),
+    ),
+    FFRoute(
+      name: UploadQcVisitWidget.routeName,
+      path: UploadQcVisitWidget.routePath,
+      builder: (context, params) => UploadQcVisitWidget(),
+    ),
+    FFRoute(
+      name: UploadAssetVerificationWidget.routeName,
+      path: UploadAssetVerificationWidget.routePath,
+      builder: (context, params) => UploadAssetVerificationWidget(),
+    ),
+    FFRoute(
+      name: AddStoreWidget.routeName,
+      path: AddStoreWidget.routePath,
+      builder: (context, params) => AddStoreWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        uploadSiteLocation: params.getParam(
+          'uploadSiteLocation',
+          ParamType.FFUploadedFile,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: MakeQcVisitWidget.routeName,
+      path: MakeQcVisitWidget.routePath,
+      builder: (context, params) => MakeQcVisitWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        question: params.getParam(
+          'question',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: StoreAnalysisWidget.routeName,
+      path: StoreAnalysisWidget.routePath,
+      builder: (context, params) => StoreAnalysisWidget(),
+    ),
+    FFRoute(
+      name: StoreAnalysisDetailsWidget.routeName,
+      path: StoreAnalysisDetailsWidget.routePath,
+      builder: (context, params) => StoreAnalysisDetailsWidget(),
+    ),
+    FFRoute(
+      name: QcVisitFormWidget.routeName,
+      path: QcVisitFormWidget.routePath,
+      builder: (context, params) => QcVisitFormWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AddStoreNewWidget.routeName,
+      path: AddStoreNewWidget.routePath,
+      builder: (context, params) => AddStoreNewWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        uploadSiteLocation: params.getParam(
+          'uploadSiteLocation',
+          ParamType.FFUploadedFile,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: MakeQcVisitCopyWidget.routeName,
+      path: MakeQcVisitCopyWidget.routePath,
+      builder: (context, params) => MakeQcVisitCopyWidget(),
+    ),
+    FFRoute(
+      name: MakeQc2VisitWidget.routeName,
+      path: MakeQc2VisitWidget.routePath,
+      builder: (context, params) => MakeQc2VisitWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        question: params.getParam(
+          'question',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: MakeAssetVerificationWidget.routeName,
+      path: MakeAssetVerificationWidget.routePath,
+      builder: (context, params) => MakeAssetVerificationWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        question: params.getParam(
+          'question',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AssetVerificationFormWidget.routeName,
+      path: AssetVerificationFormWidget.routePath,
+      builder: (context, params) => AssetVerificationFormWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: Qc2VisitFormWidget.routeName,
+      path: Qc2VisitFormWidget.routePath,
+      builder: (context, params) => Qc2VisitFormWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QcDetailsWidget.routeName,
+      path: QcDetailsWidget.routePath,
+      builder: (context, params) => QcDetailsWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: Qc2DetailsWidget.routeName,
+      path: Qc2DetailsWidget.routePath,
+      builder: (context, params) => Qc2DetailsWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AssetVerificationDetailsWidget.routeName,
+      path: AssetVerificationDetailsWidget.routePath,
+      builder: (context, params) => AssetVerificationDetailsWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QcDetailPageWidget.routeName,
+      path: QcDetailPageWidget.routePath,
+      builder: (context, params) => QcDetailPageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AvDetailPageWidget.routeName,
+      path: AvDetailPageWidget.routePath,
+      builder: (context, params) => AvDetailPageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: SdrDetailPageWidget.routeName,
+      path: SdrDetailPageWidget.routePath,
+      builder: (context, params) => SdrDetailPageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QcDetailsCopyWidget.routeName,
+      path: QcDetailsCopyWidget.routePath,
+      builder: (context, params) => QcDetailsCopyWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QceditDetailsFormWidget.routeName,
+      path: QceditDetailsFormWidget.routePath,
+      builder: (context, params) => QceditDetailsFormWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        receresponseId: params.getParam(
+          'receresponseId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QchistoryWidget.routeName,
+      path: QchistoryWidget.routePath,
+      builder: (context, params) => QchistoryWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        responseId: params.getParam(
+          'responseId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AddProjectOfflineWidget.routeName,
+      path: AddProjectOfflineWidget.routePath,
+      builder: (context, params) => AddProjectOfflineWidget(),
+    ),
+    FFRoute(
+      name: QcDetailsHistoryWidget.routeName,
+      path: QcDetailsHistoryWidget.routePath,
+      builder: (context, params) => QcDetailsHistoryWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        creatDate: params.getParam(
+          'creatDate',
+          ParamType.DateTime,
+        ),
+        responseId: params.getParam(
+          'responseId',
+          ParamType.String,
+        ),
+        historyId: params.getParam(
+          'historyId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: SelectWorkCopyWidget.routeName,
+      path: SelectWorkCopyWidget.routePath,
+      builder: (context, params) => SelectWorkCopyWidget(),
+    ),
+    FFRoute(
+      name: TaskCopyWidget.routeName,
+      path: TaskCopyWidget.routePath,
+      builder: (context, params) => TaskCopyWidget(),
+    ),
+    FFRoute(
+      name: ProfileWidget.routeName,
+      path: ProfileWidget.routePath,
+      builder: (context, params) => ProfileWidget(),
+    ),
+    FFRoute(
+      name: SelectStageForPDFWidget.routeName,
+      path: SelectStageForPDFWidget.routePath,
+      builder: (context, params) => SelectStageForPDFWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ProjectDetailScreenTestWidget.routeName,
+      path: ProjectDetailScreenTestWidget.routePath,
+      builder: (context, params) => ProjectDetailScreenTestWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: SelectStageForPDFPageWidget.routeName,
+      path: SelectStageForPDFPageWidget.routePath,
+      builder: (context, params) => SelectStageForPDFPageWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ReceDetailsWidget.routeName,
+      path: ReceDetailsWidget.routePath,
+      builder: (context, params) => ReceDetailsWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        recceflatJson: params.getParam(
+          'recceflatJson',
+          ParamType.JSON,
+        ),
+        receresponseid: params.getParam(
+          'receresponseid',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: UploadDesignCopyWidget.routeName,
+      path: UploadDesignCopyWidget.routePath,
+      builder: (context, params) => UploadDesignCopyWidget(),
+    ),
+    FFRoute(
+      name: EditProfileWidget.routeName,
+      path: EditProfileWidget.routePath,
+      builder: (context, params) => EditProfileWidget(),
+    ),
+    FFRoute(
+      name: AccountSettingsWidget.routeName,
+      path: AccountSettingsWidget.routePath,
+      builder: (context, params) => AccountSettingsWidget(
+        password: params.getParam(
+          'password',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: EditPasswordPageWidget.routeName,
+      path: EditPasswordPageWidget.routePath,
+      builder: (context, params) => EditPasswordPageWidget(),
+    ),
+    FFRoute(
+      name: EditEmailPgaeWidget.routeName,
+      path: EditEmailPgaeWidget.routePath,
+      builder: (context, params) => EditEmailPgaeWidget(
+        password: params.getParam(
+          'password',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: TaskCopy2Widget.routeName,
+      path: TaskCopy2Widget.routePath,
+      builder: (context, params) => TaskCopy2Widget(),
+    ),
+    FFRoute(
+      name: StoreDetailPageWidget.routeName,
+      path: StoreDetailPageWidget.routePath,
+      builder: (context, params) => StoreDetailPageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: TaskCopy3Widget.routeName,
+      path: TaskCopy3Widget.routePath,
+      builder: (context, params) => TaskCopy3Widget(),
+    ),
+    FFRoute(
+      name: ProjectSettingsWidget.routeName,
+      path: ProjectSettingsWidget.routePath,
+      builder: (context, params) => ProjectSettingsWidget(
+        password: params.getParam(
+          'password',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: DynamicRecceTemplate3Widget.routeName,
+      path: DynamicRecceTemplate3Widget.routePath,
+      builder: (context, params) => DynamicRecceTemplate3Widget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AssignReccePageWidget.routeName,
+      path: AssignReccePageWidget.routePath,
+      builder: (context, params) => AssignReccePageWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ReceDetailsHistoryWidget.routeName,
+      path: ReceDetailsHistoryWidget.routePath,
+      builder: (context, params) => ReceDetailsHistoryWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        recceflatJson: params.getParam(
+          'recceflatJson',
+          ParamType.JSON,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: DynamicRecceTemplate3CopyWidget.routeName,
+      path: DynamicRecceTemplate3CopyWidget.routePath,
+      builder: (context, params) => DynamicRecceTemplate3CopyWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ReceTemplateEditWidget.routeName,
+      path: ReceTemplateEditWidget.routePath,
+      builder: (context, params) => ReceTemplateEditWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+        reccestageid: params.getParam(
+          'reccestageid',
+          ParamType.String,
+        ),
+        stageNo: params.getParam(
+          'stageNo',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ReceTemplateListWidget.routeName,
+      path: ReceTemplateListWidget.routePath,
+      builder: (context, params) => ReceTemplateListWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: UsersListWidget.routeName,
+      path: UsersListWidget.routePath,
+      builder: (context, params) => UsersListWidget(),
+    ),
+    FFRoute(
+      name: AssignRolesWidget.routeName,
+      path: AssignRolesWidget.routePath,
+      builder: (context, params) => AssignRolesWidget(
+        userId: params.getParam(
+          'userId',
+          ParamType.String,
+        ),
+        uaerName: params.getParam(
+          'uaerName',
+          ParamType.String,
+        ),
+        userEmail: params.getParam(
+          'userEmail',
+          ParamType.String,
+        ),
+        userimage: params.getParam(
+          'userimage',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AddStoreNewAnnotedImageWidget.routeName,
+      path: AddStoreNewAnnotedImageWidget.routePath,
+      builder: (context, params) => AddStoreNewAnnotedImageWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        uploadSiteLocation: params.getParam(
+          'uploadSiteLocation',
+          ParamType.FFUploadedFile,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: RecceTemplateWorkingWidget.routeName,
+      path: RecceTemplateWorkingWidget.routePath,
+      builder: (context, params) => RecceTemplateWorkingWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+        reccestageid: params.getParam(
+          'reccestageid',
+          ParamType.String,
+        ),
+        stageNo: params.getParam(
+          'stageNo',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AssignUserInProjectWidget.routeName,
+      path: AssignUserInProjectWidget.routePath,
+      builder: (context, params) => AssignUserInProjectWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: ReceTemplateWorkingWidget.routeName,
+      path: ReceTemplateWorkingWidget.routePath,
+      builder: (context, params) => ReceTemplateWorkingWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+        reccestageid: params.getParam(
+          'reccestageid',
+          ParamType.String,
+        ),
+        stageNo: params.getParam(
+          'stageNo',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AnnotatedImagesForStoreDetailWidget.routeName,
+      path: AnnotatedImagesForStoreDetailWidget.routePath,
+      builder: (context, params) => AnnotatedImagesForStoreDetailWidget(
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+        proectImage: params.getParam(
+          'proectImage',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: AssignUserInProjectCopyWidget.routeName,
+      path: AssignUserInProjectCopyWidget.routePath,
+      builder: (context, params) => AssignUserInProjectCopyWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: RemoveUsersInProjectWidget.routeName,
+      path: RemoveUsersInProjectWidget.routePath,
+      builder: (context, params) => RemoveUsersInProjectWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: TaskCopy4Widget.routeName,
+      path: TaskCopy4Widget.routePath,
+      builder: (context, params) => TaskCopy4Widget(),
+    ),
+    FFRoute(
+      name: AssignUserInProjectCopy2Widget.routeName,
+      path: AssignUserInProjectCopy2Widget.routePath,
+      builder: (context, params) => AssignUserInProjectCopy2Widget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: RemoveUserFromProjectWidget.routeName,
+      path: RemoveUserFromProjectWidget.routePath,
+      builder: (context, params) => RemoveUserFromProjectWidget(
+        recestageId: params.getParam(
+          'recestageId',
+          ParamType.String,
+        ),
+        projectId: params.getParam(
+          'projectId',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: TaskNewWidget.routeName,
+      path: TaskNewWidget.routePath,
+      builder: (context, params) => TaskNewWidget(),
+    ),
+    FFRoute(
+      name: EditProjectWidget.routeName,
+      path: EditProjectWidget.routePath,
+      builder: (context, params) => EditProjectWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: OpeningScreenWidget.routeName,
+      path: OpeningScreenWidget.routePath,
+      builder: (context, params) => OpeningScreenWidget(),
+    ),
+    FFRoute(
+      name: ReceTemplateCopyWidget.routeName,
+      path: ReceTemplateCopyWidget.routePath,
+      builder: (context, params) => ReceTemplateCopyWidget(
+        projectID: params.getParam(
+          'projectID',
+          ParamType.String,
+        ),
+        reccestageid: params.getParam(
+          'reccestageid',
+          ParamType.String,
+        ),
+        stageNo: params.getParam(
+          'stageNo',
+          ParamType.String,
+        ),
+        projectName: params.getParam(
+          'projectName',
+          ParamType.String,
+        ),
+      ),
+    ),
+    FFRoute(
+      name: QcWidget.routeName,
+      path: QcWidget.routePath,
+      builder: (context, params) => QcWidget(),
+    ),
+    FFRoute(
+      name: FinalStageWidget.routeName,
+      path: FinalStageWidget.routePath,
+      builder: (context, params) => FinalStageWidget(),
+    ),
+  ];
+
+  return GoRouter(
+    initialLocation: '/',
+    debugLogDiagnostics: true,
+    refreshListenable: appStateNotifier,
+    navigatorKey: appNavigatorKey,
+    errorBuilder: (context, state) =>
+        appStateNotifier.loggedIn ? NavBarPage() : WelcomeScreenWidget(),
+    routes: [
+      // ShellRoute makes NavBarPage the parent (shell) for all listed routes,
+      // so the bottom navigation is visible on every screen.
+      ShellRoute(
+        builder: (context, state, child) => NavBarPage(page: child),
+        // Convert FFRoute instances to GoRoute before passing to ShellRoute:
+        routes: childRoutes.map((r) => r.toRoute(appStateNotifier)).toList(),
+      ),
+    ],
+  );
+}
 
 extension NavParamExtensions on Map<String, String?> {
   Map<String, String> get withoutNulls => Map.fromEntries(
@@ -1178,15 +1183,23 @@ extension NavigationExtensions on BuildContext {
 
 extension GoRouterExtensions on GoRouter {
   AppStateNotifier get appState => AppStateNotifier.instance;
-  void prepareAuthEvent([bool ignoreRedirect = false]) =>
-      appState.hasRedirect() && !ignoreRedirect
-          ? null
-          : appState.updateNotifyOnAuthChange(false);
+  void prepareAuthEvent([bool ignoreRedirect = false]) {
+    // If there's a pending redirect and we're not ignoring it, do nothing.
+    if (appState.hasRedirect() && !ignoreRedirect) {
+      return;
+    }
+    // Otherwise, mark that we don't want automatic refresh on auth change
+    // so that calling code can perform navigation/actions without interruption.
+    appState.updateNotifyOnAuthChange(false);
+  }
+
   bool shouldRedirect(bool ignoreRedirect) =>
       !ignoreRedirect && appState.hasRedirect();
+
   void clearRedirectLocation() => appState.clearRedirectLocation();
+
   void setRedirectLocationIfUnset(String location) =>
-      appState.updateNotifyOnAuthChange(false);
+      appState.setRedirectLocationIfUnset(location);
 }
 
 extension _GoRouterStateExtensions on GoRouterState {

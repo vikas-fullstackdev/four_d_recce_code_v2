@@ -41,6 +41,7 @@ class _WelcomeScreenWidgetState extends State<WelcomeScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -48,239 +49,118 @@ class _WelcomeScreenWidgetState extends State<WelcomeScreenWidget> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: theme.primaryBackground,
         body: SafeArea(
           top: true,
-          child: Align(
-            alignment: AlignmentDirectional(0.0, -1.0),
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 200.0,
-                      height: 200.0,
-                      fit: BoxFit.cover,
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Welcome',
+                    style: theme.titleLarge.override(font: GoogleFonts.interTight(fontWeight: FontWeight.w700)),
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
-                    child: Text(
-                      'Welcome to',
-                      style: FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.interTight(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                            fontSize: 26.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
+                ),
+                const SizedBox(height: 18),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 18.0),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            width: 160.0,
+                            height: 160.0,
+                            fit: BoxFit.contain,
                           ),
-                    ),
-                  ),
-                  Text(
-                    '4D Site Recce App',
-                    style: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.interTight(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          fontSize: 26.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
                         ),
+                        const SizedBox(height: 18),
+                        Text(
+                          '4D Site Recce',
+                          style: theme.titleMedium.override(font: GoogleFonts.interTight(fontWeight: FontWeight.w600, fontSize: 20)),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Capture site details, work offline and sync when online.',
+                          style: theme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(16.0, 40.0, 16.0, 0.0),
-                    child: FFButtonWidget(
-                      onPressed: () async {
-                        context.pushNamed(SignUpWidget.routeName);
+                ),
+                const SizedBox(height: 26),
+
+                // Primary actions
+                FFButtonWidget(
+                  onPressed: () async {
+                    context.pushNamed(SignUpWidget.routeName);
+                  },
+                  text: 'Get started',
+                  options: FFButtonOptions(
+                    width: double.infinity,
+                    height: 50.0,
+                    color: theme.primary,
+                    textStyle: theme.titleSmall.override(color: theme.secondaryBackground, fontWeight: FontWeight.w600),
+                    borderRadius: BorderRadius.circular(12.0),
+                    elevation: 0,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: () async {
+                    context.pushNamed(SignInWidget.routeName);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    side: BorderSide(color: theme.primaryText.withOpacity(0.12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text('Log in', style: theme.titleSmall),
+                ),
+
+                const Spacer(),
+
+                // Secondary gradient CTA (keeps original navigation)
+                // InkWell(
+                //   onTap: () async {
+                //     context.pushNamed(SignInWidget.routeName);
+                //   },
+                //   child: Container(
+                //     width: double.infinity,
+                //     height: 48,
+                //     decoration: BoxDecoration(
+                //       gradient: LinearGradient(colors: [theme.accent1, const Color(0xFFF81724)]),
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     // child: Center(
+                //     //   child: Text('Quick login', style: theme.bodyMedium.override(color: theme.secondaryBackground, fontWeight: FontWeight.w600)),
+                //     // ),
+                //   ),
+                // ),
+
+                const SizedBox(height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Already have account? ', style: theme.bodySmall),
+                    InkWell(
+                      onTap: () async {
+                        context.pushNamed(SignInWidget.routeName);
                       },
-                      text: 'Get started',
-                      options: FFButtonOptions(
-                        width: double.infinity,
-                        height: 45.0,
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
-                        iconPadding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        color: FlutterFlowTheme.of(context).primaryText,
-                        textStyle:
-                            FlutterFlowTheme.of(context).titleSmall.override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryBackground,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                        elevation: 0.0,
-                        borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
+                      child: Text('Sign in', style: theme.bodySmall.override(color: theme.primary, fontWeight: FontWeight.w600)),
                     ),
-                  ),
-                  if (responsiveVisibility(
-                    context: context,
-                    phone: false,
-                    tablet: false,
-                    tabletLandscape: false,
-                    desktop: false,
-                  ))
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 15.0, 16.0, 0.0),
-                      child: FFButtonWidget(
-                        onPressed: () {
-                          print('logInButton pressed ...');
-                        },
-                        text: 'Log In',
-                        options: FFButtonOptions(
-                          width: double.infinity,
-                          height: 45.0,
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          textStyle: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .override(
-                                font: GoogleFonts.interTight(
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                letterSpacing: 0.0,
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                          elevation: 0.0,
-                          borderSide: BorderSide(
-                            color: Color(0xFF9C664B),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(32.0),
-                          hoverColor: FlutterFlowTheme.of(context).primaryText,
-                          hoverTextColor:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                        ),
-                      ),
-                    ),
-                  Align(
-                    alignment: AlignmentDirectional(0.0, 0.0),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-                      child: Container(
-                        width: double.infinity,
-                        height: 45.0,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              FlutterFlowTheme.of(context).accent1,
-                              Color(0xFFF81724)
-                            ],
-                            stops: [0.0, 1.0],
-                            begin: AlignmentDirectional(1.0, 0.0),
-                            end: AlignmentDirectional(-1.0, 0),
-                          ),
-                          borderRadius: BorderRadius.circular(32.0),
-                          border: Border.all(
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              0.5, 0.5, 0.5, 0.5),
-                          child: InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              context.pushNamed(SignInWidget.routeName);
-                            },
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 1000),
-                              curve: Curves.easeIn,
-                              width: 100.0,
-                              height: 100.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                borderRadius: BorderRadius.circular(32.0),
-                              ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: Text(
-                                  'Log in',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 16.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
           ),
         ),

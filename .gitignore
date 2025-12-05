@@ -1,2 +1,7 @@
-# Flutter build folder
-build/
+# Ignore common build and temporary files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.dart_tool/
+/build/

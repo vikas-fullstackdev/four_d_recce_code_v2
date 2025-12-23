@@ -400,7 +400,7 @@ class _QceditDetailsFormWidgetState extends State<QceditDetailsFormWidget>
                                       'reccestageid': widget!.recestageId,
                                       'location':
                                           currentUserLocationValue?.toString(),
-                                      'stageNo': 3,
+                                      'stageno': 3,
                                     },
                                     matchingRows: (rows) => rows.eqOrNull(
                                       'recceresponseid',
@@ -408,7 +408,7 @@ class _QceditDetailsFormWidgetState extends State<QceditDetailsFormWidget>
                                     ),
                                   );
                                   await HistoryTable().insert({
-                                    'recceresponseId': widget!.receresponseId,
+                                    'recceresponseid': widget!.receresponseId,
                                     'formjson': <String, List<dynamic>?>{
                                       'qcr': _model.qcroutput1,
                                     },
@@ -417,9 +417,9 @@ class _QceditDetailsFormWidgetState extends State<QceditDetailsFormWidget>
                                         getCurrentTimestamp),
                                     'createdat': supaSerialize<DateTime>(
                                         getCurrentTimestamp),
-                                    'location':
-                                        currentUserLocationValue?.toString(),
-                                    'stageNo': 3,
+                  'location':
+                    currentUserLocationValue?.toString(),
+                  'stageno': 3,
                                   });
                                   FFAppState().editqc = [];
                                   safeSetState(() {});

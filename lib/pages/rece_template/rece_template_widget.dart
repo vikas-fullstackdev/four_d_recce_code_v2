@@ -45,7 +45,9 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
         child: Text(
           title,
           style: const TextStyle(
-              color: Colors.deepOrange, fontWeight: FontWeight.bold, fontSize: 16),
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
         ),
       );
 
@@ -75,18 +77,41 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
               children: [
                 ElevatedButton.icon(
                   icon: const Icon(Icons.image),
-                  label: const Text('Pick Image'),
+                  label: const Text('Pick Images'),
                   onPressed: () async {
-                    await controller.pickImage();
-                    setState(() {});
+                    try {
+                      await controller.pickImage();
+                      if (mounted) {
+                        setState(() {});
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Image uploaded successfully'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error uploading image: $e'),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                      }
+                    }
                   },
                 ),
                 const SizedBox(width: 12),
                 if (controller.imageUrl != null)
                   Expanded(
                     child: Text(
-                      controller.imageUrl!,
+                      controller.imageUrls.length > 1
+                          ? '${controller.imageUrls.length} images - ${controller.imageUrl}'
+                          : controller.imageUrl!,
                       overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.green, fontSize: 12),
                     ),
                   )
               ],
@@ -95,8 +120,7 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
         ),
       );
 
-  Widget yesNoRadio(String label, TextEditingController controller) =>
-      Padding(
+  Widget yesNoRadio(String label, TextEditingController controller) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 6.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label),
@@ -146,7 +170,8 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                   const SizedBox(width: 12),
                   const Text(
                     'MEP Check List',
-                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600, color: Colors.black),
                   ),
                 ],
               ),
@@ -155,8 +180,12 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                   children: [
                     IconButton(
                       icon: Icon(
-                        model.isDeviceOnlineTImer ? Icons.online_prediction : Icons.cloud_off,
-                        color: model.isDeviceOnlineTImer ? Colors.green : Colors.red,
+                        model.isDeviceOnlineTImer
+                            ? Icons.online_prediction
+                            : Icons.cloud_off,
+                        color: model.isDeviceOnlineTImer
+                            ? Colors.green
+                            : Colors.red,
                       ),
                       onPressed: () async {
                         model.checkDeviceOnline();
@@ -187,55 +216,176 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                 padding: const EdgeInsets.all(12),
                 children: [
                   ExpansionTile(
-                    title: const Text('A. HVAC DETAILS',
+                    title: const Text('A1. HVAC DETAILS',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     children: [
                       sectionHeader('A1. MALL PROPERTY'),
-                      yesNoRadio('Is there a existing AHU?', model.a1_ahu_exists),
+                      yesNoRadio(
+                          'Is there a existing AHU?', model.a1_ahu_exists),
                       textField('Can use AHU', model.a1_use_ahu),
                       photoField('AHU Location', model.a1_ahu_location),
-                      yesNoRadio('Chilled Tapoff exists?', model.a1_chilled_tapoff_exists),
-                      photoField('Chilled Tapoff Location', model.a1_chilled_tapoff_location),
-                      textField('Chilled Pipe Height', model.a1_chilled_pipe_height,
+                      yesNoRadio('Chilled Tapoff exists?',
+                          model.a1_chilled_tapoff_exists),
+                      photoField('Chilled Tapoff Location',
+                          model.a1_chilled_tapoff_location),
+                      textField(
+                          'Chilled Pipe Height', model.a1_chilled_pipe_height,
                           keyboardType: TextInputType.number),
-                      photoField('Chilled Pipe Photo', model.a1_chilled_pipe_photo),
-                      yesNoRadio('HVAC Drain exists?', model.a1_hvac_drain_exists),
-                      photoField('HVAC Drain Location', model.a1_hvac_drain_location),
+                      photoField(
+                          'Chilled Pipe Photo', model.a1_chilled_pipe_photo),
+                      yesNoRadio(
+                          'HVAC Drain exists?', model.a1_hvac_drain_exists),
+                      photoField(
+                          'HVAC Drain Location', model.a1_hvac_drain_location),
                       textField('HVAC Drain Height', model.a1_hvac_drain_height,
                           keyboardType: TextInputType.number),
-                      yesNoRadio('Fresh Air Provided?', model.a1_fresh_air_provided),
+                      yesNoRadio(
+                          'Fresh Air Provided?', model.a1_fresh_air_provided),
                       textField('Fresh Air Type', model.a1_fresh_air_type),
-                      photoField('Fresh Air Location', model.a1_fresh_air_location),
+                      photoField(
+                          'Fresh Air Location', model.a1_fresh_air_location),
                       textField('Fresh Air Height', model.a1_fresh_air_height,
                           keyboardType: TextInputType.number),
-                      yesNoRadio('Exhaust Provided?', model.a1_exhaust_provided),
+                      yesNoRadio(
+                          'Exhaust Provided?', model.a1_exhaust_provided),
                       textField('Exhaust Type', model.a1_exhaust_type),
                       photoField('Exhaust Location', model.a1_exhaust_location),
                       textField('Exhaust Height', model.a1_exhaust_height,
                           keyboardType: TextInputType.number),
                     ],
                   ),
+
+                  // A2 Hi-street / Hybrid / Complex
+                  ExpansionTile(
+                    title: const Text('A2. HI-STREET PROPERTY / HYBRID / COMPLEX',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    children: [
+                      sectionHeader('A2. HI-STREET PROPERTY / HYBRID / COMPLEX'),
+                      // "Area there existing AC units available at site ? Yes / No"
+                      yesNoRadio(
+                        'Are there existing AC units available at site?',
+                        model.a2_ac_units_exist,
+                      ),
+
+                      // "Can we use the Existing Units ? Yes / No"
+                      yesNoRadio(
+                        'Can we use the existing AC units?',
+                        model.a2_use_existing_units,
+                      ),
+
+                      // "Where is the ODU placement locations ?"
+                      photoField(
+                        'Where is the ODU placement location? (Upload photo / mark on plan)',
+                        model.a2_odu_locations,
+                      ),
+
+                      // "What is the distance of ODU from store ? Calculate approx distance as per site."
+                      textField(
+                        'Approx distance of ODU from store (e.g., 3m)',
+                        model.a2_odu_distance,
+                        keyboardType: TextInputType.text,
+                      ),
+
+                      // "Where is the AC Drain Point point Located ? Upload Photo (Site Photo & location marked on plan)"
+                      photoField(
+                        'AC drain point location (Upload site photo & plan mark)',
+                        model.a2_ac_drain_location,
+                      ),
+                    ],
+                  ),
+
+                  // A3 COMMON POINTS
+                  ExpansionTile(
+                    title: const Text('A3. COMMON POINTS',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    children: [
+                      sectionHeader('A3. COMMON POINTS'),
+
+                      // Surrounding details dropdowns
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: model.a3_surroundings.keys.map<Widget>((side) {
+                            final current = model.a3_surroundings[side] ?? 'AC';
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(flex: 2, child: Text(side)),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    flex: 3,
+                                    child: DropdownButtonFormField<String>(
+                                      value: current,
+                                      items: const [
+                                        DropdownMenuItem(value: 'AC', child: Text('AC')),
+                                        DropdownMenuItem(value: 'Non AC', child: Text('Non AC')),
+                                        DropdownMenuItem(value: 'Exposed to Sun', child: Text('Exposed to Sun')),
+                                      ],
+                                      onChanged: (val) {
+                                        model.a3_surroundings[side] = val ?? 'AC';
+                                        model.notifyListeners();
+                                      },
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+
+                      // Structural glazing yes/no
+                      yesNoRadio(
+                        'Is there existing structural glazing at site?',
+                        model.a3_structural_glazing,
+                      ),
+
+                      // Glazing exposed to sun yes/no
+                      yesNoRadio(
+                        'Is the glazing exposed to sun?',
+                        model.a3_glazing_exposed,
+                      ),
+                    ],
+                  ),
+
                   const SizedBox(height: 16),
                   ExpansionTile(
                     title: const Text('B. ELECTRICAL DETAILS',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     children: [
-                      yesNoRadio('Power Supply Exists?', model.b_power_supply_exists),
-                      photoField('Power Supply Location', model.b_power_supply_location),
-                      photoField('Electrical Load Provision', model.b_electrical_load_provision),
+                      yesNoRadio(
+                          'Power Supply Exists?', model.b_power_supply_exists),
+                      photoField('Power Supply Location',
+                          model.b_power_supply_location),
+                      photoField('Electrical Load Provision',
+                          model.b_electrical_load_provision),
                       textField('Power Cable Type', model.b_power_cable_type),
-                      textField('Power for Lift Provision', model.b_power_for_lift_provision),
-                      textField('Power Cable Details for Lift', model.b_power_cable_details_for_lift),
+                      textField('Power for Lift Provision',
+                          model.b_power_for_lift_provision),
+                      textField('Power Cable Details for Lift',
+                          model.b_power_cable_details_for_lift),
                       sectionHeader('B1. DG'),
                       yesNoRadio('DG Exists?', model.b1_dg_exists),
-                      textField('DG Dedicated/Shared', model.b1_dg_dedicated_shared),
+                      textField(
+                          'DG Dedicated/Shared', model.b1_dg_dedicated_shared),
                       photoField('DG Location', model.b1_dg_location),
-                      photoField('DG Load Provision', model.b1_dg_load_provision),
+                      photoField(
+                          'DG Load Provision', model.b1_dg_load_provision),
                       textField('DG Backup Hours', model.b1_dg_backup_hours),
-                      textField('DG Changeover Type', model.b1_dg_changeover_type),
+                      textField(
+                          'DG Changeover Type', model.b1_dg_changeover_type),
                       sectionHeader('B2. Earthing'),
-                      textField('Earthing Dedicated', model.b2_earthing_dedicated),
-                      photoField('Earthpit Location', model.b2_earthpit_location),
+                      textField(
+                          'Earthing Dedicated', model.b2_earthing_dedicated),
+                      photoField(
+                          'Earthpit Location', model.b2_earthpit_location),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -245,7 +395,8 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                     children: [
                       yesNoRadio('Sprinkler Exists?', model.c_sprinkler_exists),
                       textField('Sprinkler Type', model.c_sprinkler_type),
-                      photoField('Tapoff Location', model.c_sprinkler_tapoff_location),
+                      photoField(
+                          'Tapoff Location', model.c_sprinkler_tapoff_location),
                       textField('Pipe Height', model.c_sprinkler_pipe_height),
                       photoField('Pipe Photo', model.c_sprinkler_pipe_photo),
                     ],
@@ -256,7 +407,8 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     children: [
                       yesNoRadio('FAS Exists?', model.d_fas_exists),
-                      textField('Smoke Detector Type', model.d_smoke_detector_type),
+                      textField(
+                          'Smoke Detector Type', model.d_smoke_detector_type),
                       photoField('Panel Location', model.d_fas_panel_location),
                       textField('Panel Make', model.d_fas_panel_make),
                       textField('Panel Type', model.d_fas_panel_type),
@@ -268,11 +420,14 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     children: [
                       yesNoRadio('Plumbing Exists?', model.e_plumbing_exists),
-                      photoField('Plumbing Location', model.e_plumbing_location),
+                      photoField(
+                          'Plumbing Location', model.e_plumbing_location),
                       yesNoRadio('Toilet Exists?', model.e_toilet_exists),
-                      photoField('Proposed Toilet Locations', model.e_proposed_toilet_locations),
+                      photoField('Proposed Toilet Locations',
+                          model.e_proposed_toilet_locations),
                       textField('Core Cuts Allowed', model.e_core_cuts_allowed),
-                      textField('Dedicated Water Tank', model.e_dedicated_water_tank),
+                      textField(
+                          'Dedicated Water Tank', model.e_dedicated_water_tank),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -280,8 +435,10 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                     title: const Text('F. FIRE HYDRANT DETAILS',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     children: [
-                      yesNoRadio('Fire Hydrant Exists?', model.f_fire_hydrant_exists),
-                      photoField('Fire Hydrant Locations', model.f_fire_hydrant_locations),
+                      yesNoRadio(
+                          'Fire Hydrant Exists?', model.f_fire_hydrant_exists),
+                      photoField('Fire Hydrant Locations',
+                          model.f_fire_hydrant_locations),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -297,17 +454,21 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         final state = model.formKey.currentState;
                         if (state == null || !state.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please fix validation errors')),
+                            const SnackBar(
+                                content: Text('Please fix validation errors')),
                           );
                           return;
                         }
 
                         // Build JSON locally (for preview and upload)
                         final formJson = model.getFormJson();
-                        final prettyJson = const JsonEncoder.withIndent('  ').convert(formJson);
+                        final prettyJson = const JsonEncoder.withIndent('  ')
+                            .convert(formJson);
 
                         // Convert stageNo to int if available
-                        final stageno = widget.stageNo != null ? int.tryParse(widget.stageNo!) : null;
+                        final stageno = widget.stageNo != null
+                            ? int.tryParse(widget.stageNo!)
+                            : null;
 
                         // Submit to Supabase
                         await model.submitFormToSupabase(
@@ -341,6 +502,23 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         //       ],
                         //     ),
                         //   );
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (_) => AlertDialog(
+                        //     title: const Text('Submitted'),
+                        //     content: const Text('Your recce form is submitted'),
+                        //     actions: [
+                        //       TextButton(
+                        //         onPressed: () {
+                        //           // Navigator.pop(context); // close the dialog
+                        //           Navigator.pop(
+                        //               context); // navigate back to previous screen
+                        //         },
+                        //         child: const Text('Close'),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -349,8 +527,7 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  // Navigator.pop(context); // close the dialog
-                                  Navigator.pop(context); // navigate back to previous screen
+                                  Navigator.of(context, rootNavigator: true).pop();
                                 },
                                 child: const Text('Close'),
                               ),
@@ -361,7 +538,10 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         print('submitForm error: $e\n$st');
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error submitting form: ${e.toString()}'), backgroundColor: Colors.red),
+                          SnackBar(
+                              content: Text(
+                                  'Error submitting form: ${e.toString()}'),
+                              backgroundColor: Colors.red),
                         );
                       }
                     },

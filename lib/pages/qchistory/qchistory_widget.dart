@@ -274,7 +274,7 @@ class _QchistoryWidgetState extends State<QchistoryWidget>
                             FutureBuilder<List<HistoryRow>>(
                               future: HistoryTable().queryRows(
                                 queryFn: (q) => q.eqOrNull(
-                                  'recceresponseId',
+                                  'recceresponseid',
                                   widget!.responseId,
                                 ),
                               ),

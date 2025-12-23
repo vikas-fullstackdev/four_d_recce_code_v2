@@ -74,6 +74,47 @@ Widget _renderJsonWidget(BuildContext context, dynamic data) {
       final decoded = jsonDecode(data);
       return _renderJsonWidget(context, decoded);
     } catch (_) {
+      // If the string looks like an image URL, render the image instead of the raw URL
+      final trimmed = data.trim();
+      final isImageUrl = RegExp(r'^(https?:)?//.+\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?\$', caseSensitive: false);
+      final isHttpLike = RegExp(r'^(https?:)?//');
+
+      if (isImageUrl.hasMatch(trimmed) || (isHttpLike.hasMatch(trimmed) && (trimmed.contains('storage') || trimmed.contains('supabase') || trimmed.contains('cdn')))) {
+        // show network image as a square thumbnail with placeholder
+        const imageSize = 160.0;
+        final imageUrl = trimmed.startsWith('//') ? 'https:$trimmed' : trimmed;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: SizedBox(
+            width: imageSize,
+            height: imageSize,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                imageUrl,
+                width: imageSize,
+                height: imageSize,
+                fit: BoxFit.cover, // fill square, crop if needed (no stretch)
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return SizedBox(
+                    width: imageSize,
+                    height: imageSize,
+                    child: Center(child: CircularProgressIndicator(value: progress.expectedTotalBytes != null ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1) : null)),
+                  );
+                },
+                errorBuilder: (context, err, stack) => Container(
+                  width: imageSize,
+                  height: imageSize,
+                  color: Colors.grey.shade200,
+                  child: Center(child: Icon(Icons.broken_image, color: Colors.grey, size: 40)),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
       return Text(data, style: theme.bodyMedium);
     }
   }

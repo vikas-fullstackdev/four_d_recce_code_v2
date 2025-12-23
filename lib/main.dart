@@ -25,7 +25,7 @@ void main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
 
-  await initFirebase();
+  //await initFirebase();
 
   // Start initial custom actions code
   await actions.initHive();

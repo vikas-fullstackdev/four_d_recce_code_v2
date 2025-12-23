@@ -58,6 +58,7 @@ Future<List<SelectedFile>?> selectMediaWithSourceBottomSheet({
   Color backgroundColor = const Color(0xFFF5F5F5),
   bool includeDimensions = false,
   bool includeBlurHash = false,
+  bool multiImage = false,
 }) async {
   final createUploadMediaListTile =
       (String label, MediaSource mediaSource) => ListTile(
@@ -145,6 +146,7 @@ Future<List<SelectedFile>?> selectMediaWithSourceBottomSheet({
     isVideo: mediaSource == MediaSource.videoGallery ||
         (mediaSource == MediaSource.camera && allowVideo && !allowPhoto),
     mediaSource: mediaSource,
+    multiImage: multiImage,
     includeDimensions: includeDimensions,
     includeBlurHash: includeBlurHash,
   );

@@ -7,6 +7,8 @@ import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'dart:typed_data';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -25,11 +27,15 @@ final SupabaseClient supabase = Supabase.instance.client;
 
 class PhotoController {
   final TextEditingController textController = TextEditingController();
-  String? imageUrl;
+  // Support multiple uploaded image URLs. Keep `imageUrl` as the first (if any)
+  // for backward compatibility in UI places that expect a single URL.
+  List<String> imageUrls = [];
+  String? get imageUrl => imageUrls.isNotEmpty ? imageUrls.first : null;
 
   Map<String, dynamic> toMap() => {
         'text': textController.text,
-        'imageUrl': imageUrl,
+        // expose all uploaded urls as a list for form json
+        'imageUrls': imageUrls,
       };
 
   void dispose() {
@@ -37,9 +43,81 @@ class PhotoController {
   }
 
   Future<void> pickImage() async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result != null && result.files.isNotEmpty) {
-      imageUrl = result.files.single.path;
+    try {
+      print('🔍 pickImage: Starting file picker...');
+      // Allow multiple image selection
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+      );
+      print('🔍 pickImage: FilePicker result = $result');
+
+      if (result != null && result.files.isNotEmpty) {
+        // Clear previous urls (user is picking new set)
+        imageUrls = [];
+
+        // Iterate over each selected file and upload
+        for (final file in result.files) {
+          final filePath = file.path;
+          print('🔍 pickImage: filePath = $filePath');
+
+          if (filePath == null) {
+            print('❌ pickImage: One of selected file paths is null, skipping');
+            continue;
+          }
+
+          // Read file bytes
+          print('🔍 pickImage: Reading file bytes for ${file.name}...');
+          final fileBytes = await _readFileBytes(filePath);
+          print('🔍 pickImage: File bytes read: ${fileBytes.length} bytes');
+
+          // Upload to Supabase storage under recce/ folder
+          final fileName =
+              '${DateTime.now().millisecondsSinceEpoch}_${file.name}';
+          final uploadPath = 'recce/$fileName';
+          print('🔍 pickImage: uploadPath = $uploadPath');
+
+          print('🔍 pickImage: Uploading to Supabase storage...');
+          await supabase.storage.from('project_uploads').uploadBinary(
+                uploadPath,
+                fileBytes,
+                fileOptions: FileOptions(upsert: false),
+              );
+          print('✅ pickImage: Upload completed for ${file.name}');
+
+          // Get public URL
+          final publicUrl =
+              supabase.storage.from('project_uploads').getPublicUrl(uploadPath);
+          print('🔍 pickImage: publicUrl = $publicUrl');
+
+          if (publicUrl != null) {
+            imageUrls.add(publicUrl);
+            print('✅ pickImage: Image uploaded successfully: $publicUrl');
+          }
+        }
+      } else {
+        print('🔍 pickImage: No file selected');
+      }
+    } catch (e, st) {
+      print('❌ pickImage: Error = $e');
+      print('❌ pickImage: Stack trace = $st');
+      rethrow;
+    }
+  }
+
+  Future<Uint8List> _readFileBytes(String filePath) async {
+    try {
+      final file = File(filePath);
+      final exists = await file.exists();
+      if (!exists) {
+        throw Exception('File does not exist at path: $filePath');
+      }
+      final bytes = await file.readAsBytes();
+      return bytes;
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error reading file bytes: $e');
+      rethrow;
     }
   }
 }
@@ -52,7 +130,8 @@ class ReceTemplateModel extends ChangeNotifier {
   final TextEditingController a1_ahu_exists = TextEditingController();
   final TextEditingController a1_use_ahu = TextEditingController();
   final PhotoController a1_ahu_location = PhotoController();
-  final TextEditingController a1_chilled_tapoff_exists = TextEditingController();
+  final TextEditingController a1_chilled_tapoff_exists =
+      TextEditingController();
   final PhotoController a1_chilled_tapoff_location = PhotoController();
   final TextEditingController a1_chilled_pipe_height = TextEditingController();
   final PhotoController a1_chilled_pipe_photo = PhotoController();
@@ -92,8 +171,10 @@ class ReceTemplateModel extends ChangeNotifier {
   final PhotoController b_power_supply_location = PhotoController();
   final PhotoController b_electrical_load_provision = PhotoController();
   final TextEditingController b_power_cable_type = TextEditingController();
-  final TextEditingController b_power_for_lift_provision = TextEditingController();
-  final TextEditingController b_power_cable_details_for_lift = TextEditingController();
+  final TextEditingController b_power_for_lift_provision =
+      TextEditingController();
+  final TextEditingController b_power_cable_details_for_lift =
+      TextEditingController();
 
   // B1 DG
   final TextEditingController b1_dg_exists = TextEditingController();
@@ -307,7 +388,8 @@ class ReceTemplateModel extends ChangeNotifier {
       // If it's a PostgrestResponse-like object:
       try {
         if ((response as dynamic).error != null) {
-          throw Exception((response as dynamic).error?.message ?? 'Insert failed');
+          throw Exception(
+              (response as dynamic).error?.message ?? 'Insert failed');
         }
       } catch (_) {
         // If response is raw data (map/list), treat as success.

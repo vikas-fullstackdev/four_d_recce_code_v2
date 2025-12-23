@@ -1062,6 +1062,52 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
                 ),
 
                 // IMPORTANT FIX: give GridView a bounded height by wrapping in Expanded
+                // Expanded(
+                //   child: GridView(
+                //     padding: EdgeInsets.zero,
+                //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                //       crossAxisCount: 2,
+                //       crossAxisSpacing: 16.0,
+                //       mainAxisSpacing: 16.0,
+                //       childAspectRatio: 0.8,
+                //     ),
+                //     physics: const BouncingScrollPhysics(),
+                //     children: [
+                //      _menuCard(
+                //        context: context,
+                //        title: 'Corporate Brands',
+                //        icon: Icons.business,
+                //        projectType: 'corporate',
+                //        iconBg: const Color(0xFFF3E5F5),
+                //        iconColor: Colors.purple,
+                //      ),
+                //      _menuCard(
+                //        context: context,
+                //        title: 'International Sites',
+                //        icon: Icons.public,
+                //        projectType: 'international',
+                //        iconBg: const Color(0xFFFEF7E0),
+                //        iconColor: Colors.orange,
+                //      ),
+                //      _menuCard(
+                //        context: context,
+                //        title: 'F&B Projects',
+                //        icon: Icons.restaurant,
+                //        projectType: 'fandb',
+                //        iconBg: const Color(0xFFE8F5E8),
+                //        iconColor: theme.success,
+                //      ),
+                //     _menuCard(
+                //        context: context,
+                //        title: 'Regional Brands',
+                //        icon: Icons.location_city,
+                //        projectType: 'regional',
+                //        iconBg: const Color(0xFFE3F2FD),
+                //        iconColor: theme.primary,
+                //      ),
+                //    ],
+                //   ),
+                // ),
                 Expanded(
                   child: GridView(
                     padding: EdgeInsets.zero,
@@ -1075,7 +1121,7 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
                     children: [
                      _menuCard(
                        context: context,
-                       title: 'Corporate',
+                       title: 'Corporate Brands',
                        icon: Icons.business,
                        projectType: 'corporate',
                        iconBg: const Color(0xFFF3E5F5),
@@ -1083,25 +1129,25 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
                      ),
                      _menuCard(
                        context: context,
-                       title: 'International Sites',
+                       title: 'Regional Brands',
                        icon: Icons.public,
-                       projectType: 'international',
+                       projectType: 'regional',
                        iconBg: const Color(0xFFFEF7E0),
                        iconColor: Colors.orange,
                      ),
                      _menuCard(
                        context: context,
-                       title: 'F&B',
+                       title: 'International Project Sites',
                        icon: Icons.restaurant,
-                       projectType: 'fandb',
+                       projectType: 'international',
                        iconBg: const Color(0xFFE8F5E8),
                        iconColor: theme.success,
                      ),
                     _menuCard(
                        context: context,
-                       title: 'Regional',
+                       title: 'F&B Projects',
                        icon: Icons.location_city,
-                       projectType: 'regional',
+                       projectType: 'fandb',
                        iconBg: const Color(0xFFE3F2FD),
                        iconColor: theme.primary,
                      ),

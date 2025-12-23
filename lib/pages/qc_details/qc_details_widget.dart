@@ -24,12 +24,14 @@ class QcDetailsWidget extends StatefulWidget {
     this.projectName,
     this.proectImage,
     required this.recestageId,
+    this.historyFormJson,
   });
 
   final String? projectId;
   final String? projectName;
   final String? proectImage;
   final String? recestageId;
+  final dynamic? historyFormJson;
 
   static String routeName = 'qcDetails';
   static String routePath = '/qcDetails';
@@ -479,10 +481,13 @@ class _QcDetailsWidgetState extends State<QcDetailsWidget>
 
                                   return Builder(
                                     builder: (context) {
+                                      final rawFormJson = widget.historyFormJson ?? listViewRecceresponsesRow?.formjson;
                                       final qcrVariable = getJsonField(
-                                        listViewRecceresponsesRow?.formjson,
+                                        rawFormJson,
                                         r'''$.qcr''',
-                                      ).toList();
+                                      ) is Iterable
+                                          ? (getJsonField(rawFormJson, r'''$.qcr''') as Iterable).toList()
+                                          : <dynamic>[];
 
                                       return ListView.separated(
                                         padding: EdgeInsets.symmetric(

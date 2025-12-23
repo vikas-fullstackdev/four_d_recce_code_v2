@@ -1,7 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 Future initFirebase() async {
+  // Skip Firebase initialization on unsupported platforms (Linux, Windows, macOS)
+  if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
+    return;
+  }
+  
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: FirebaseOptions(

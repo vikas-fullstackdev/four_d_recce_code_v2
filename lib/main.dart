@@ -16,6 +16,9 @@ import 'flutter_flow/flutter_flow_util.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
+// import 'package:four_d_recce_code/notification_service.dart';
+import '/notification_service.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +36,11 @@ void main() async {
   // End initial custom actions code
 
   await SupaFlow.initialize();
+
+  // initialize the notification
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await NotificationService.init();
+  await NotificationService.init();
 
   final appState = FFAppState(); // Initialize FFAppState
   await appState.initializePersistedState();

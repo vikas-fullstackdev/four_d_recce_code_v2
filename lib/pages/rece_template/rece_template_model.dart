@@ -21,6 +21,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '/notification_service.dart';
+
 
 // ensure a supabase client variable is available in this file
 final SupabaseClient supabase = Supabase.instance.client;

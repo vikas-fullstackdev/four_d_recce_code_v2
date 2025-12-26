@@ -3,6 +3,11 @@ import 'package:provider/provider.dart';
 import 'rece_template_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
+import '/notification_service.dart';
+import 'package:go_router/go_router.dart';
+import '../image_annotator_page_fixed.dart';
+import '../emailjs.dart';
+
 
 class ReceTemplateWidget extends StatefulWidget {
   const ReceTemplateWidget({
@@ -160,6 +165,7 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
               backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
               title: Row(
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   Image.asset(
                     'assets/images/logo.png',
@@ -168,43 +174,66 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'MEP Check List',
-                    style: TextStyle(
+                  Text(
+                    'SDR Screen',
+                    style: const TextStyle(
                         fontWeight: FontWeight.w600, color: Colors.black),
                   ),
                 ],
               ),
               actions: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        model.isDeviceOnlineTImer
-                            ? Icons.online_prediction
-                            : Icons.cloud_off,
-                        color: model.isDeviceOnlineTImer
-                            ? Colors.green
-                            : Colors.red,
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      // Online/offline indicator
+                      IconButton(
+                        icon: Icon(
+                          model.isDeviceOnlineTImer ? Icons.online_prediction : Icons.cloud_off,
+                          color: model.isDeviceOnlineTImer ? Colors.green : Colors.red,
+                        ),
+                        onPressed: () async {
+                          model.checkDeviceOnline();
+                        },
                       ),
-                      onPressed: () async {
-                        model.checkDeviceOnline();
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        model.timerValue,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+
+                      // Timer value
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          model.timerValue,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.person, color: Colors.black),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/profile');
-                      },
-                    ),
-                  ],
+
+                
+
+                      // Profile
+                      IconButton(
+                        icon: const Icon(Icons.person, color: Colors.black),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/profile');
+                        },
+                      ),
+
+                      // Receipt / template (shown on wider screens)
+                      if (MediaQuery.of(context).size.width > 700)
+                        IconButton(
+                          icon: const Icon(Icons.draw, color: Colors.black),
+                          onPressed: () async {
+                            // Open image annotator. Pass a placeholder image if none available.
+                            final placeholder = 'https://via.placeholder.com/1024x768.png?text=Annotate+Image';
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ImageAnnotatorPage(imageUrl: placeholder),
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ],
               centerTitle: false,
@@ -519,20 +548,44 @@ class _ReceTemplateWidgetState extends State<ReceTemplateWidget> {
                         //     ],
                         //   ),
                         // );
+                        NotificationService.showNotification(
+                              title: "Form Submitted",
+                              body: "Your Recce Form form has been successfully submitted",
+                            );
+                        await sendTestEmail();
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (_) => AlertDialog(
+                        //     title: const Text('Submitted'),
+                        //     content: const Text('Your recce form is submitted'),
+                        //     actions: [
+                        //       TextButton(
+                        //         onPressed: () {
+                        //           Navigator.of(context, rootNavigator: true).pop();
+                        //         },
+                        //         // onPressed: () {
+                        //         //         Navigator.pop(dialogContext); // close dialog
+                        //         //         Navigator.goNamed('sdrDetailPage');      // go back screen
+                        //         //       },
+                        //         child: const Text('Close'),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
                         showDialog(
                           context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text('Submitted'),
-                            content: const Text('Your recce form is submitted'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context, rootNavigator: true).pop();
-                                },
-                                child: const Text('Close'),
-                              ),
-                            ],
-                          ),
+                          barrierDismissible: false,
+                          builder: (dialogContext) {
+                            Future.delayed(const Duration(seconds: 2), () {
+                              Navigator.of(dialogContext).pop();
+                              context.goNamed('sdrDetailPage');
+                            });
+
+                            return const AlertDialog(
+                              title: Text('Submitted'),
+                              content: Text('Your recce form is submitted'),
+                            );
+                          },
                         );
                       } catch (e, st) {
                         print('submitForm error: $e\n$st');

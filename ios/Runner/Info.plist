@@ -84,5 +84,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 
+	<!-- add new -->
+	<key>UIBackgroundModes</key>
+	<array>
+	<string>remote-notification</string>
+	</array>
+
+	<key>NSUserNotificationUsageDescription</key>
+	<string>App uses notifications</string>
+
+
 </dict>
 </plist>

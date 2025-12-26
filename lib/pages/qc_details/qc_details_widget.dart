@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:math';
 import 'dart:ui';
+import 'dart:convert';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -25,6 +26,7 @@ class QcDetailsWidget extends StatefulWidget {
     this.proectImage,
     required this.recestageId,
     this.historyFormJson,
+    this.historyId,
   });
 
   final String? projectId;
@@ -32,6 +34,7 @@ class QcDetailsWidget extends StatefulWidget {
   final String? proectImage;
   final String? recestageId;
   final dynamic? historyFormJson;
+  final String? historyId;
 
   static String routeName = 'qcDetails';
   static String routePath = '/qcDetails';
@@ -146,6 +149,164 @@ class _QcDetailsWidgetState extends State<QcDetailsWidget>
     _model.dispose();
 
     super.dispose();
+  }
+
+  Widget _buildFormJsonContent(dynamic rawFormJson) {
+    // Safely render media, other top-level fields and the qcr list
+    final media = getJsonField(rawFormJson, r'''$.media''');
+
+    // Collect image URLs from media
+    final List<String> imageUrls = [];
+    if (media != null) {
+      void addIfUrl(dynamic v) {
+        if (v == null) return;
+        if (v is String && v.trim().isNotEmpty) {
+          imageUrls.add(v);
+        } else if (v is Iterable) {
+          for (final e in v) {
+            if (e is String && e.trim().isNotEmpty) imageUrls.add(e);
+          }
+        }
+      }
+
+      addIfUrl(getJsonField(media, r'''$.lhsPhotoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.rhsPhotoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.oppositePhotoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.northFacingPhotoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.completeFacadePhotoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.siteSurroundingsVideoUrl'''));
+      addIfUrl(getJsonField(media, r'''$.lhsPhotoUrls'''));
+      addIfUrl(getJsonField(media, r'''$.rhsPhotoUrls'''));
+      addIfUrl(getJsonField(media, r'''$.oppositePhotoUrls'''));
+      addIfUrl(getJsonField(media, r'''$.northFacingPhotoUrls'''));
+      addIfUrl(getJsonField(media, r'''$.completeFacadePhotoUrls'''));
+      addIfUrl(getJsonField(media, r'''$.finalSolutionAttachmentUrl'''));
+      addIfUrl(getJsonField(media, r'''$.finalSolutionAttachmentUrls'''));
+    }
+
+    // Prepare qcr list (same safety as before)
+    final rawQcr = getJsonField(rawFormJson, r'''$.qcr''');
+    List qcrVariable;
+    if (rawQcr == null) {
+      qcrVariable = <dynamic>[];
+    } else if (rawQcr is List) {
+      qcrVariable = rawQcr;
+    } else if (rawQcr is Iterable) {
+      qcrVariable = rawQcr.toList();
+    } else {
+      qcrVariable = [rawQcr];
+    }
+
+    // Render other top-level keys (excluding qcr and media) in a clean structured way
+    final List<Widget> otherFields = [];
+    if (rawFormJson is Map) {
+      // Use a stable key ordering
+      final keys = rawFormJson.keys.where((k) => k != 'qcr' && k != 'media').toList();
+      for (final k in keys) {
+        otherFields.add(Padding(padding: EdgeInsets.symmetric(vertical: 6.0), child: _buildJsonSectionWidgets(k, rawFormJson[k])));
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (imageUrls.isNotEmpty) ...[
+          Text('Photos', style: FlutterFlowTheme.of(context).labelMedium),
+          SizedBox(height: 8.0),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: imageUrls.map((u) => SizedBox(width: 120.0, height: 90.0, child: Image.network(u, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey)))).toList(),
+          ),
+          SizedBox(height: 12.0),
+        ],
+        if (otherFields.isNotEmpty) ...[
+          ...otherFields,
+          SizedBox(height: 12.0),
+        ],
+        // QCR list
+        if (qcrVariable.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('QCR', style: FlutterFlowTheme.of(context).labelMedium),
+              SizedBox(height: 8.0),
+              ListView.separated(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: qcrVariable.length,
+                separatorBuilder: (_, __) => SizedBox(height: 10.0),
+                itemBuilder: (context, qcrVariableIndex) {
+                  final qcrVariableItem = qcrVariable[qcrVariableIndex];
+                  return QcDetailComponentWidget(
+                    key: Key('Keyurl_${qcrVariableIndex}_of_${qcrVariable.length}'),
+                    img: getJsonField(
+                      qcrVariableItem,
+                      r'''$.qc_img''',
+                      true,
+                    ),
+                    que: getJsonField(
+                      qcrVariableItem,
+                      r'''$.qc_que''',
+                    ).toString(),
+                    ans: getJsonField(
+                      qcrVariableItem,
+                      r'''$.qc_ans''',
+                    ).toString(),
+                  );
+                },
+              ),
+            ],
+          ),
+        // end of structured content
+      ],
+    );
+  }
+
+  // (removed unused recursive image collector)
+
+  // Build structured widgets for a JSON node with a title
+  Widget _buildJsonSectionWidgets(String title, dynamic node) {
+    if (node == null) {
+      return ListTile(title: Text(title), subtitle: Text('null'));
+    }
+    // Image URL
+    if (node is String && node.trim().startsWith('http')) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: FlutterFlowTheme.of(context).labelMedium),
+          SizedBox(height: 8.0),
+          Image.network(node, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(height: 120.0, color: Colors.grey)),
+        ],
+      );
+    }
+
+    // Map: show expandable section with child keys (don't dump raw JSON)
+    if (node is Map) {
+      final childKeys = node.keys.toList();
+      return ExpansionTile(
+        title: Row(children: [Text(title, style: TextStyle(fontWeight: FontWeight.w600)), SizedBox(width: 8.0), Text('(${childKeys.length} items)', style: TextStyle(color: Colors.grey, fontSize: 12.0))]),
+        children: childKeys.map<Widget>((k) => Padding(padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0), child: _buildJsonSectionWidgets(k, node[k]))).toList(),
+      );
+    }
+
+    // Iterable: show expandable list with index labels
+    if (node is Iterable) {
+      final list = node.toList();
+      return ExpansionTile(
+        title: Row(children: [Text(title, style: TextStyle(fontWeight: FontWeight.w600)), SizedBox(width: 8.0), Text('(${list.length} items)', style: TextStyle(color: Colors.grey, fontSize: 12.0))]),
+        children: list.asMap().entries.map<Widget>((e) => Padding(padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0), child: _buildJsonSectionWidgets('Item ${e.key + 1}', e.value))).toList(),
+      );
+    }
+
+    // Primitive: show key -> value succinctly (no raw JSON)
+    return ListTile(
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
+      subtitle: Text(node.toString()),
+    );
   }
 
   @override
@@ -481,45 +642,37 @@ class _QcDetailsWidgetState extends State<QcDetailsWidget>
 
                                   return Builder(
                                     builder: (context) {
-                                      final rawFormJson = widget.historyFormJson ?? listViewRecceresponsesRow?.formjson;
-                                      final qcrVariable = getJsonField(
-                                        rawFormJson,
-                                        r'''$.qcr''',
-                                      ) is Iterable
-                                          ? (getJsonField(rawFormJson, r'''$.qcr''') as Iterable).toList()
-                                          : <dynamic>[];
+                                      // If a specific historyId was provided, load that history row
+                                      if (widget.historyId != null && widget.historyId!.trim().isNotEmpty) {
+                                        return FutureBuilder<List<HistoryRow>>(
+                                          future: HistoryTable().querySingleRow(
+                                            queryFn: (q) => q.eqOrNull('history_id', widget.historyId),
+                                          ),
+                                          builder: (context, histSnap) {
+                                            if (!histSnap.hasData) {
+                                              return Center(
+                                                child: SizedBox(
+                                                  width: 36.0,
+                                                  height: 36.0,
+                                                  child: CircularProgressIndicator(
+                                                    color: FlutterFlowTheme.of(context).primary,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                            final histList = histSnap.data!;
+                                            final histRow = histList.isNotEmpty ? histList.first : null;
+                                            final rawFormJson = widget.historyFormJson ?? histRow?.formjson ?? listViewRecceresponsesRow?.formjson;
 
-                                      return ListView.separated(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10.0),
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: qcrVariable.length,
-                                        separatorBuilder: (_, __) =>
-                                            SizedBox(height: 10.0),
-                                        itemBuilder:
-                                            (context, qcrVariableIndex) {
-                                          final qcrVariableItem =
-                                              qcrVariable[qcrVariableIndex];
-                                          return QcDetailComponentWidget(
-                                            key: Key(
-                                                'Keyurl_${qcrVariableIndex}_of_${qcrVariable.length}'),
-                                            img: getJsonField(
-                                              qcrVariableItem,
-                                              r'''$.qc_img''',
-                                              true,
-                                            ),
-                                            que: getJsonField(
-                                              qcrVariableItem,
-                                              r'''$.qc_que''',
-                                            ).toString(),
-                                            ans: getJsonField(
-                                              qcrVariableItem,
-                                              r'''$.qc_ans''',
-                                            ).toString(),
-                                          );
-                                        },
-                                      );
+                                            return _buildFormJsonContent(rawFormJson);
+                                          },
+                                        );
+                                      }
+
+                                      // Default: use response formjson (or passed historyFormJson) to render qcr
+                                      final rawFormJson = widget.historyFormJson ?? listViewRecceresponsesRow?.formjson;
+
+                                      return _buildFormJsonContent(rawFormJson);
                                     },
                                   );
                                 },

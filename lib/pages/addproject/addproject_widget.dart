@@ -17,6 +17,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'addproject_model.dart';
 export 'addproject_model.dart';
+import '/notification_service.dart';
+
 
 class AddprojectWidget extends StatefulWidget {
   const AddprojectWidget({
@@ -838,6 +840,13 @@ class _AddprojectWidgetState extends State<AddprojectWidget> {
                               print('Project insert failed: $e\n$st');
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add project: ${e.toString()}')));
                             }
+
+                            NotificationService.showNotification(
+                              title: "Project Saved!",
+                              body: "Your Project Form form has been successfully submitted",
+                            );
+
+
                           } catch (err, st) {
                             print('[Save] unexpected: $err\n$st');
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Unexpected error: ${err.toString()}')));

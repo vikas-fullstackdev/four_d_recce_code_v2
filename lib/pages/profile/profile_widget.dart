@@ -5,17 +5,15 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:math';
 import 'dart:ui';
 import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'profile_model.dart';
 export 'profile_model.dart';
+import '../users.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -447,22 +445,7 @@ class _ProfileWidgetState extends State<ProfileWidget>
                         return Container(
                           decoration: BoxDecoration(),
                           child: Visibility(
-                            visible: functions
-                                        .getHighestPriorityRole(
-                                            containerUserRolesRowList
-                                                .map((e) => e.roleId)
-                                                .withoutNulls
-                                                .toList())
-                                        .toString() !=
-                                    null &&
-                                functions
-                                        .getHighestPriorityRole(
-                                            containerUserRolesRowList
-                                                .map((e) => e.roleId)
-                                                .withoutNulls
-                                                .toList())
-                                        .toString() !=
-                                    '',
+                            visible: containerUserRolesRowList.isNotEmpty,
                             child: Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   16.0, 12.0, 16.0, 0.0),
@@ -654,87 +637,206 @@ class _ProfileWidgetState extends State<ProfileWidget>
                     Padding(
                       padding:
                           EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(EditProfileWidget.routeName);
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 4.0,
-                                color: FlutterFlowTheme.of(context).tertiary,
-                                offset: Offset(
-                                  0.0,
-                                  2.0,
-                                ),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(12.0),
-                            border: Border.all(
-                              color: FlutterFlowTheme.of(context).secondary,
-                              width: 0.5,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                8.0, 12.0, 8.0, 12.0),
+                      child: Column(
+                        children: [
+                          // Quick action icons: Tasks, Staff, Message
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
                             child: Row(
-                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      8.0, 0.0, 0.0, 0.0),
-                                  child: Icon(
-                                    Icons.account_circle_outlined,
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryText,
-                                    size: 24.0,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      12.0, 0.0, 0.0, 0.0),
-                                  child: Text(
-                                    'Edit Profile',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
+                                // Tasks
+                                Column(
+                                  children: [
+                                    Tooltip(
+                                      message: 'Tasks',
+                                      child: Material(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryBackground,
+                                        shape: const CircleBorder(),
+                                        elevation: 2.0,
+                                        child: InkWell(
+                                          customBorder: const CircleBorder(),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const UsersWidget(),
+                                              ),
+                                            );
+                                          },
+                                          child: const SizedBox(
+                                            width: 64.0,
+                                            height: 64.0,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.task,
+                                                size: 28.0,
+                                              ),
+                                            ),
                                           ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
                                         ),
-                                  ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6.0),
+                                    Text('Tasks',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodySmall),
+                                  ],
+                                ),
+                                // Staff
+                                Column(
+                                  children: [
+                                    Tooltip(
+                                      message: 'Staff',
+                                      child: Material(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryBackground,
+                                        shape: const CircleBorder(),
+                                        elevation: 2.0,
+                                        child: InkWell(
+                                          customBorder: const CircleBorder(),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const UsersWidget(),
+                                              ),
+                                            );
+                                          },
+                                          child: const SizedBox(
+                                            width: 64.0,
+                                            height: 64.0,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.group,
+                                                size: 28.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6.0),
+                                    Text('Staff',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodySmall),
+                                  ],
+                                ),
+                                // Message
+                                Column(
+                                  children: [
+                                    Tooltip(
+                                      message: 'Message',
+                                      child: Material(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryBackground,
+                                        shape: const CircleBorder(),
+                                        elevation: 2.0,
+                                        child: InkWell(
+                                          customBorder: const CircleBorder(),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const UsersWidget(),
+                                              ),
+                                            );
+                                          },
+                                          child: const SizedBox(
+                                            width: 64.0,
+                                            height: 64.0,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.message,
+                                                size: 28.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6.0),
+                                    Text('Message',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodySmall),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ).animateOnPageLoad(
-                          animationsMap['containerOnPageLoadAnimation1']!),
+
+                          // Original Edit Profile container follows
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () async {
+                              context.pushNamed(EditProfileWidget.routeName);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 4.0,
+                                    color: FlutterFlowTheme.of(context).tertiary,
+                                    offset: Offset(
+                                      0.0,
+                                      2.0,
+                                    ),
+                                  )
+                                ],
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                  color: FlutterFlowTheme.of(context).secondary,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    8.0, 12.0, 8.0, 12.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          8.0, 0.0, 0.0, 0.0),
+                                      child: Icon(
+                                        Icons.account_circle_outlined,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          12.0, 0.0, 0.0, 0.0),
+                                      child: Text(
+                                        'Edit Profile',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              font: GoogleFonts.inter(),
+                                              letterSpacing: 0.0,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ).animateOnPageLoad(
+                              animationsMap['containerOnPageLoadAnimation1']!),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding:

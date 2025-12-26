@@ -152,6 +152,35 @@ class _QcDetailsHistoryWidgetState extends State<QcDetailsHistoryWidget>
     super.dispose();
   }
 
+  String? _selectedProjectId;
+  String? _selectedProjectName;
+
+  Future<List<HistoryRow>> _fetchHistoryForProject(String? projectId) async {
+    if (projectId == null) return [];
+    if (projectId is String && projectId.trim().isEmpty) return [];
+
+    // Try direct history lookup by projectid (if the column exists)
+    try {
+      final direct = await HistoryTable().queryRows(
+        queryFn: (q) => q.eqOrNull('projectid', projectId).order('createdat', ascending: false),
+      );
+      if (direct.isNotEmpty) return direct;
+    } catch (e) {
+      // ignore and fallback
+    }
+
+    // Fallback: find responses for this project, then history for those responses
+    final responses = await RecceresponsesTable().queryRows(
+      queryFn: (q) => q.eqOrNull('projectid', projectId),
+    );
+    final responseIds = responses.map((r) => r.recceresponseid).whereType<String>().toList();
+    if (responseIds.isEmpty) return [];
+    final history = await HistoryTable().queryRows(
+      queryFn: (q) => q.inFilterOrNull('recceresponseid', responseIds).order('createdat', ascending: false),
+    );
+    return history;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ReccetemplatesRow>>(
@@ -262,6 +291,124 @@ class _QcDetailsHistoryWidgetState extends State<QcDetailsHistoryWidget>
                         color: Color(0xFFE0E3E7),
                       ).animateOnPageLoad(
                           animationsMap['dividerOnPageLoadAnimation']!),
+                      // Projects dropdown + filtered history list
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 12.0),
+                        child: FutureBuilder<List<ProjectsRow>>(
+                          future: ProjectsTable().queryRows(queryFn: (q) => q.order('name')),
+                          builder: (context, snapProjects) {
+                            if (!snapProjects.hasData) {
+                              return SizedBox(
+                                height: 48.0,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 24.0,
+                                    height: 24.0,
+                                    child: CircularProgressIndicator(
+                                      color: FlutterFlowTheme.of(context).primary,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            final projects = snapProjects.data!;
+                            // filter out null/duplicate project ids and compute a safe selected value
+                            final uniqueProjects = <ProjectsRow>[];
+                            final seenIds = <String>{};
+                            for (final p in projects) {
+                              final id = p.projectid;
+                              if (id == null) continue;
+                              if (seenIds.add(id)) uniqueProjects.add(p);
+                            }
+                            final currentValue = _selectedProjectId ?? widget.projectId;
+                            final safeValue = uniqueProjects.any((p) => p.projectid == currentValue) ? currentValue : null;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButtonFormField<String>(
+                                  value: safeValue,
+                                  decoration: InputDecoration(
+                                    labelText: 'Select project',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  items: uniqueProjects
+                                      .map((p) => DropdownMenuItem(
+                                            value: p.projectid,
+                                            child: Text(p.name ?? p.projectid ?? 'Unnamed'),
+                                          ))
+                                      .toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _selectedProjectId = val;
+                                      final matched = uniqueProjects.where((p) => p.projectid == val).toList();
+                                      _selectedProjectName = matched.isNotEmpty ? matched.first.name : null;
+                                    });
+                                  },
+                                ),
+                                SizedBox(height: 12.0),
+                                FutureBuilder<List<HistoryRow>>(
+                                  future: _fetchHistoryForProject(
+                                    (_selectedProjectId != null && _selectedProjectId!.trim().isNotEmpty)
+                                        ? _selectedProjectId
+                                        : (widget.projectId != null && widget.projectId!.trim().isNotEmpty ? widget.projectId : null),
+                                  ),
+                                  builder: (context, snapHistory) {
+                                    if (!snapHistory.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 36.0,
+                                          height: 36.0,
+                                          child: CircularProgressIndicator(
+                                            color: FlutterFlowTheme.of(context).primary,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    final historyList = snapHistory.data!;
+                                    if (historyList.isEmpty) {
+                                      return Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
+                                        child: Text('No history found for selected project.'),
+                                      );
+                                    }
+                                    return ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: historyList.length,
+                                      separatorBuilder: (_, __) => Divider(),
+                                      itemBuilder: (context, idx) {
+                                        final h = historyList[idx];
+                                        final dt = h.createdat ?? h.submittedat;
+                                        final label = dt != null ? (dt is DateTime ? dt.toLocal().toString() : dt.toString()) : 'Unknown';
+                                        return ListTile(
+                                          title: Text(label),
+                                          subtitle: Text(h.submittedby ?? ''),
+                                          trailing: Icon(Icons.arrow_forward_ios, size: 16.0),
+                                          onTap: () async {
+                                            await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => QcDetailsWidget(
+                                                  projectId: _selectedProjectId ?? widget.projectId,
+                                                  projectName: _selectedProjectName ?? widget.projectName,
+                                                  proectImage: widget.proectImage,
+                                                  recestageId: widget.recestageId,
+                                                  historyId: h.historyId,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                       FutureBuilder<List<RecceresponsesRow>>(
                         future: RecceresponsesTable().querySingleRow(
                           queryFn: (q) => q
@@ -503,10 +650,20 @@ class _QcDetailsHistoryWidgetState extends State<QcDetailsHistoryWidget>
 
                                   return Builder(
                                     builder: (context) {
-                                      final qcrVariable = getJsonField(
+                                      final rawQcr = getJsonField(
                                         listViewHistoryRow?.formjson,
                                         r'''$.qcr''',
-                                      ).toList();
+                                      );
+                                      List qcrVariable;
+                                      if (rawQcr == null) {
+                                        qcrVariable = <dynamic>[];
+                                      } else if (rawQcr is List) {
+                                        qcrVariable = rawQcr;
+                                      } else if (rawQcr is Iterable) {
+                                        qcrVariable = rawQcr.toList();
+                                      } else {
+                                        qcrVariable = [rawQcr];
+                                      }
 
                                       return ListView.separated(
                                         padding: EdgeInsets.symmetric(

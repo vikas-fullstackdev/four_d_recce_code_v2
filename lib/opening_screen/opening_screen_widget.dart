@@ -9,6 +9,7 @@
 // import '/custom_code/actions/index.dart' as actions;
 // import '/index.dart';
 // import '/flutter_flow/nav/nav.dart'; // <-- ADD THIS LINE
+import '../pages/image_annotator_page_fixed.dart';
 // import 'package:stop_watch_timer/stop_watch_timer.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
@@ -705,6 +706,8 @@
 // }
 
 
+import 'package:four_d_recce_code/pages/image_annotator_page.dart';
+
 import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -978,6 +981,19 @@ class _OpeningScreenWidgetState extends State<OpeningScreenWidget> {
                           },
                         ),
                     ],
+                  ),
+                  FlutterFlowIconButton(
+                    borderRadius: 20.0,
+                    buttonSize: 40.0,
+                    fillColor: theme.primary,
+                    icon: const Icon(
+                      Icons.draw,
+                      color: Colors.white,
+                      size: 20.0,
+                    ),
+                     onPressed: () async {
+                      context.pushNamed(ProfileWidget.routeName);
+                    },
                   ),
                   FlutterFlowIconButton(
                     borderRadius: 20.0,
